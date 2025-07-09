@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Tasks | Task Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-hover: #3a56d4;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --info: #4895ef;
+            --dark: #212529;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        .dark-mode {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #e0e0e0;
+            --border-color: #444;
+            --input-bg: #333;
+            --input-border: #555;
+            --table-header-bg: #333;
+            --table-row-even: #2a2a2a;
+            --table-row-hover: #383838;
+        }
+
+        .light-mode {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --border-color: #dee2e6;
+            --input-bg: #ffffff;
+            --input-border: #ced4da;
+            --table-header-bg: #f1f3f5;
+            --table-row-even: #f8f9fa;
+            --table-row-hover: #e9ecef;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: var(--transition);
+            padding: 20px;
+        }
+
+        .container {
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            border: none;
+            font-size: 14px;
+        }
+
+        .btn i {
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--card-bg);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .btn-info {
+            background-color: var(--info);
+            color: white;
+        }
+
+        .project-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .task-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .task-table th, .task-table td {
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .task-table th {
+            background-color: var(--table-header-bg);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        .task-table tr:nth-child(even) {
+            background-color: var(--table-row-even);
+        }
+
+        .task-table tr:hover {
+            background-color: var(--table-row-hover);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-completed {
+            background-color: rgba(76, 201, 240, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .status-ongoing {
+            background-color: rgba(248, 150, 30, 0.1);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .status-pending {
+            background-color: rgba(108, 117, 125, 0.1);
+            color: var(--gray);
+            border: 1px solid var(--gray);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-color);
+            opacity: 0.6;
+        }
+
+        .empty-state i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 6px 10px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: var(--border-radius);
+            color: var(--text-color);
+            transition: var(--transition);
+            font-size: 14px;
+        }
+
+        .form-control-sm {
+            padding: 4px 8px;
+            font-size: 13px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-col {
+            flex: 1;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            width: 100%;
+            max-width: 600px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .editable {
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
+
+        .editable:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        .editable-input {
+            width: 100%;
+            padding: 4px 6px;
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+        }
+
+        .editable-select {
+            width: 100%;
+            padding: 4px 6px;
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 13px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .cost-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .task-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .filters {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        /* Utility classes */
+        .text-success { color: var(--success);}
+        .text-warning { color: var(--warning);}
+        .text-danger { color: var(--danger);}
+        .text-primary { color: var(--primary);}
+        .text-muted { color: var(--gray);}
+        
+        .cost-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <div class="container">
+        <div class="header">
+            <a href="projectdetail.html" class="btn btn-outline" id="backBtn">
+                <i class="fas fa-arrow-left"></i> Back to Project
+            </a>
+            <div class="actions">
+                <button class="btn btn-primary" id="addTaskBtn">
+                    <i class="fas fa-plus"></i> Add Task
+                </button>
+                <button class="btn btn-outline" id="toggleModeBtn" style="margin-left: 10px;">
+                    <i class="fas fa-moon"></i> Light Mode
+                </button>
+            </div>
+        </div>
+        
+        <h1 class="project-title" id="projectTitle">Project Tasks</h1>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-tasks"></i> Task List
+                </h2>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search tasks...">
+                    <button class="btn btn-outline">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="filters">
+                <div class="filter-group">
+                    <span class="filter-label">Filter by Status:</span>
+                    <select class="form-control form-control-sm" id="statusFilter">
+                        <option value="">All Statuses</option>
+                        <option value="COMPLETED">Completed</option>
+                        <option value="ONGOING">Ongoing</option>
+                        <option value="PENDING">Pending</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">Filter by Month:</span>
+                    <select class="form-control form-control-sm" id="monthFilter">
+                        <option value="">All Months</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">Filter by Year:</span>
+                    <select class="form-control form-control-sm" id="yearFilter">
+                        <option value="">All Years</option>
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="task-table" id="taskTable">
+                    <thead>
+                        <tr>
+                            <th>TASK ID</th>
+                            <th>TASK LINE</th>
+                            <th>TASK DESCRIPTION</th>
+                            <th>ASSIGNED</th>
+                            <th>STATUS</th>
+                            <th>START DATE</th>
+                            <th>END DATE</th>
+                            <th>DURATION</th>
+                            <th>MATERIAL COST</th>
+                            <th>MAN COST</th>
+                            <th>TOTAL COST</th>
+                            <th>LOCATION</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="taskList">
+                        <!-- Tasks will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="empty-state" id="emptyState">
+                <i class="fas fa-tasks"></i>
+                <p>No tasks found. Add your first task!</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Task Modal -->
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Add New Task</h3>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <form id="taskForm">
+                <input type="hidden" id="taskId">
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="taskLine" class="form-label">Task Line</label>
+                            <input type="number" class="form-control" id="taskLine" required>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="taskIdInput" class="form-label">Task ID</label>
+                            <input type="text" class="form-control" id="taskIdInput" readonly required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="taskDescription" class="form-label">Task Description</label>
+                    <textarea class="form-control" id="taskDescription" rows="2" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="assignedTo" class="form-label">Assigned To</label>
+                    <input type="text" class="form-control" id="assignedTo">
+                </div>
+                <div class="form-group">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="location" placeholder="e.g. Warehouse A">
+                </div>
+                <!-- ADDED START/END DATE FIELDS -->
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="startDate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="startDate">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="endDate" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="endDate">
+                        </div>
+                    </div>
+                </div>
+                <!-- END ADDED FIELDS -->
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-control" id="status" required>
+                                <option value="">Select Status</option>
+                                <option value="COMPLETED">COMPLETED</option>
+                                <option value="ONGOING">ONGOING</option>
+                                <option value="PENDING">PENDING</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="duration" class="form-label">Duration</label>
+                            <input type="text" class="form-control" id="duration" placeholder="e.g. 2 days">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="materialCost" class="form-label">Material Cost</label>
+                            <input type="number" class="form-control" id="materialCost" step="0.01" placeholder="0.00">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="manCost" class="form-label">Man Cost</label>
+                            <input type="number" class="form-control" id="manCost" step="0.01" placeholder="0.00">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="currency" class="form-label">Currency</label>
+                            <select class="form-control" id="currency">
+                                <option value="ZMW">ZMW</option>
+                                <option value="EUR">EUR</option>
+                                <option value="GBP">GBP</option>
+                                <option value="GHS">GHS</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="comment" class="form-label">Comment</label>
+                    <textarea class="form-control" id="comment" rows="2"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveTaskBtn">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+    import { getFirestore, doc, getDoc, collection, query, where, onSnapshot, addDoc, updateDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDXhhy94Aqmaav6X0UsfMcmsBT539-aheU",
+        authDomain: "project-task-588c4.firebaseapp.com",
+        projectId: "project-task-588c4",
+        storageBucket: "project-task-588c4.appspot.com",
+        messagingSenderId: "411882772509",
+        appId: "1:411882772509:web:08d613186c101a99f38ef4",
+        measurementId: "G-JMFLFYEM0F"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Get project ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectId = urlParams.get('id');
+    
+    if (!projectId) {
+        window.location.href = 'dashboard.html';
+    }
+
+    // DOM Elements
+    const toggleModeBtn = document.getElementById('toggleModeBtn');
+    const backBtn = document.getElementById('backBtn');
+    const addTaskBtn = document.getElementById('addTaskBtn');
+    const taskList = document.getElementById('taskList');
+    const emptyState = document.getElementById('emptyState');
+    const projectTitle = document.getElementById('projectTitle');
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+    const monthFilter = document.getElementById('monthFilter');
+    const yearFilter = document.getElementById('yearFilter');
+    const locationInput = document.getElementById('location');
+    const taskModal = document.getElementById('taskModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const closeModal = document.getElementById('closeModal');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const taskForm = document.getElementById('taskForm');
+    const taskId = document.getElementById('taskId');
+    const taskIdInput = document.getElementById('taskIdInput');
+    const taskLine = document.getElementById('taskLine');
+    const taskDescription = document.getElementById('taskDescription');
+    const assignedTo = document.getElementById('assignedTo');
+    const status = document.getElementById('status');
+    const startDate = document.getElementById('startDate');
+    const endDate = document.getElementById('endDate');
+    const duration = document.getElementById('duration');
+    const materialCost = document.getElementById('materialCost');
+    const manCost = document.getElementById('manCost');
+    const currency = document.getElementById('currency');
+    const comment = document.getElementById('comment');
+    const saveTaskBtn = document.getElementById('saveTaskBtn');
+    const body = document.body;
+
+    // Set back button URL with project ID
+    backBtn.href = `Projectdetail.html?id=${projectId}`;
+
+    // Toggle dark/light mode
+    toggleModeBtn.addEventListener('click', function() {
+        body.classList.toggle('light-mode');
+        const icon = this.querySelector('i');
+        if (body.classList.contains('light-mode')) {
+            this.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+            localStorage.setItem('theme', 'light');
+        } else {
+            this.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+            localStorage.setItem('theme', 'dark');
+        }
+    });
+
+    // Check for saved theme preference
+    if (localStorage.getItem('theme') === 'light') {
+        body.classList.add('light-mode');
+        toggleModeBtn.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+    } else {
+        toggleModeBtn.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+    }
+
+    // Format date
+    function formatDate(dateString) {
+        if (!dateString) return '';
+        const date = dateString.toDate ? dateString.toDate() : new Date(dateString);
+        return date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+    }
+
+    function formatDateForInput(dateString) {
+        if (!dateString) return '';
+        const date = dateString.toDate ? dateString.toDate() : new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    function formatCurrency(amount, curr = 'ZMW') {
+        if (!amount && amount !== 0) return '';
+        const formatter = new Intl.NumberFormat(undefined, {
+            style: 'currency',
+            currency: curr || 'ZMW',
+            minimumFractionDigits: 2
+        });
+        return formatter.format(amount);
+    }
+
+    function getStatusBadge(status) {
+        if (!status) return '';
+        status = status.toUpperCase();
+        if (status === 'COMPLETED') {
+            return 'status-badge status-completed';
+        } else if (status === 'ONGOING') {
+            return 'status-badge status-ongoing';
+        } else {
+            return 'status-badge status-pending';
+        }
+    }
+    
+    async function loadProjectName() {
+        try {
+            const projectRef = doc(db, "projectDashboard", projectId);
+            const projectDoc = await getDoc(projectRef);
+            if (projectDoc.exists()) {
+                const project = projectDoc.data();
+                projectTitle.textContent = `${project.name} - Tasks`;
+            }
+        } catch (error) {
+            console.error("Error loading project name: ", error);
+        }
+    }
+
+    function makeEditable(cell, value, fieldName, taskId, isSelect = false, options = []) {
+        cell.innerHTML = '';
+        if (isSelect) {
+            const select = document.createElement('select');
+            select.className = 'editable-select';
+            options.forEach(option => {
+                const optElement = document.createElement('option');
+                optElement.value = option;
+                optElement.textContent = option;
+                if (value && value.toUpperCase() === option.toUpperCase()) {
+                    optElement.selected = true;
+                }
+                select.appendChild(optElement);
+            });
+            select.addEventListener('change', async () => {
+                await updateTaskField(taskId, fieldName, select.value);
+                const badgeClass = getStatusBadge(select.value);
+                cell.innerHTML = `<span class="${badgeClass}">${select.value}</span>`;
+            });
+            cell.appendChild(select);
+            select.focus();
+        } else {
+            const input = document.createElement('input');
+            input.type = (fieldName.includes('Date')) ? 'date'
+                        : 'text';
+            input.className = 'editable-input';
+            if (fieldName.includes('Date')) {
+                input.value = formatDateForInput(value) || '';
+            } else {
+                input.value = value || '';
+            }
+            input.addEventListener('blur', async () => {
+                let newValue = input.value;
+                if (fieldName.includes('Date') && newValue) {
+                    newValue = new Date(newValue);
+                }
+                await updateTaskField(taskId, fieldName, newValue);
+                cell.textContent = newValue || '';
+            });
+            input.addEventListener('keypress', async (e) => {
+                if (e.key === 'Enter') {
+                    let newValue = input.value;
+                    if (fieldName.includes('Date') && newValue) {
+                        newValue = new Date(newValue);
+                    }
+                    await updateTaskField(taskId, fieldName, newValue);
+                    input.blur();
+                }
+            });
+            cell.appendChild(input);
+            input.focus();
+        }
+    }
+
+    async function updateTaskField(taskId, fieldName, value) {
+        try {
+            const taskRef = doc(db, "projectTasks", taskId);
+            if (value === '' && (fieldName === 'assignedTo' || fieldName === 'duration' || fieldName === 'comment' || fieldName === 'location')) {
+                value = null;
+            }
+            await updateDoc(taskRef, {
+                [fieldName]: value,
+                updatedAt: new Date()
+            });
+        } catch (error) {
+            console.error("Error updating task field: ", error);
+            alert("Error updating task. Please try again.");
+        }
+    }
+
+    function filterTasks(tasks, searchTerm, statusFilterVal, monthFilterVal, yearFilterVal) {
+        return tasks.filter(task => {
+            const matchesSearch = !searchTerm || 
+                (task.taskId && task.taskId.toLowerCase().includes(searchTerm)) ||
+                (task.taskDescription && task.taskDescription.toLowerCase().includes(searchTerm)) ||
+                (task.assignedTo && task.assignedTo.toLowerCase().includes(searchTerm)) ||
+                (task.status && task.status.toLowerCase().includes(searchTerm)) ||
+                (task.location && task.location.toLowerCase().includes(searchTerm)) ||
+                (task.comment && task.comment.toLowerCase().includes(searchTerm));
+            const matchesStatus = !statusFilterVal || 
+                (task.status && task.status.toUpperCase() === statusFilterVal.toUpperCase());
+            let matchesMonth = true;
+            if (monthFilterVal) {
+                const monthNum = parseInt(monthFilterVal);
+                if (task.startDate) {
+                    const date = task.startDate.toDate ? task.startDate.toDate() : new Date(task.startDate);
+                    matchesMonth = date.getMonth() + 1 === monthNum;
+                } else {
+                    matchesMonth = false;
+                }
+            }
+            let matchesYear = true;
+            if (yearFilterVal) {
+                const yearNum = parseInt(yearFilterVal);
+                if (task.startDate) {
+                    const date = task.startDate.toDate ? task.startDate.toDate() : new Date(task.startDate);
+                    matchesYear = date.getFullYear() === yearNum;
+                } else {
+                    matchesYear = false;
+                }
+            }
+            return matchesSearch && matchesStatus && matchesMonth && matchesYear;
+        });
+    }
+
+    // --- COST LOGIC (copy from all-project-tasks) ---
+    let matExpCostUnsubscribers = [];
+    function subscribeMatExpCostForTask(taskId, cb, currency = 'ZMW') {
+        let matTotal = 0, expTotal = 0;
+        let matUnsub, expUnsub;
+        // Subscribe to materialsUsage
+        matUnsub = onSnapshot(query(collection(db, "materialsUsage"), where("taskId", "==", taskId)), async (snap) => {
+            let tempTotal = 0;
+            const materialCache = {};
+            for (const docSnap of snap.docs) {
+                const d = docSnap.data();
+                if (d.reversed) continue;
+                if (d.materialId && materialCache[d.materialId] === undefined) {
+                    try {
+                        const matSnap = await getDoc(doc(db, "materials", d.materialId));
+                        materialCache[d.materialId] = matSnap.exists() ? matSnap.data().unitPrice : 0;
+                    } catch { materialCache[d.materialId] = 0; }
+                }
+            }
+            snap.forEach(doc => {
+                const d = doc.data();
+                if (d.reversed) return;
+                const qty = Number(d.quantity) || 0;
+                let unit = Number(d.unitPrice) || 0;
+                if ((!d.unitPrice || d.unitPrice === "-") && d.materialId && materialCache[d.materialId] !== undefined) {
+                    unit = Number(materialCache[d.materialId]) || 0;
+                }
+                tempTotal += qty * unit;
+            });
+            matTotal = tempTotal;
+            cb(matTotal + expTotal);
+        });
+        // Subscribe to General expenses
+        expUnsub = onSnapshot(query(collection(db, "General expenses"), where("taskId", "==", taskId)), (snap) => {
+            let tempTotal = 0;
+            snap.forEach(doc => {
+                const d = doc.data();
+                if (typeof d.amount === "number") tempTotal += d.amount;
+            });
+            expTotal = tempTotal;
+            cb(matTotal + expTotal);
+        });
+        return () => { matUnsub && matUnsub(); expUnsub && expUnsub(); };
+    }
+
+    let manCostUnsubscribers = [];
+    function subscribeManCostForTask(taskId, cb, rate = 20) {
+        const q = query(collection(db, "locationHistory"), where("taskId", "==", taskId));
+        return onSnapshot(q, (snap) => {
+            let totalMH = 0;
+            snap.forEach(doc => {
+                const d = doc.data();
+                if (d.mh && !isNaN(d.mh)) {
+                    totalMH += Number(d.mh);
+                }
+            });
+            cb(totalMH * rate);
+        });
+    }
+    // --- END COST LOGIC ---
+
+    function renderTasks(tasks) {
+        manCostUnsubscribers.forEach(unsub => unsub && unsub());
+        manCostUnsubscribers = [];
+        matExpCostUnsubscribers.forEach(unsub => unsub && unsub());
+        matExpCostUnsubscribers = [];
+
+        taskList.innerHTML = '';
+        if (tasks.length === 0) {
+            emptyState.style.display = 'block';
+            return;
+        }
+        emptyState.style.display = 'none';
+        tasks.sort((a, b) => (a.taskLine || 0) - (b.taskLine || 0));
+        tasks.forEach(task => {
+            const currency = task.currency || 'ZMW';
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${task.taskId || ''}</td>
+                <td class="editable" data-field="taskLine" data-taskid="${task.id}">${task.taskLine || ''}</td>
+                <td>${task.taskDescription || ''}</td>
+                <td class="editable" data-field="assignedTo" data-taskid="${task.id}">${task.assignedTo || ''}</td>
+                <td class="editable" data-field="status" data-taskid="${task.id}">
+                    <span class="${getStatusBadge(task.status)}">${task.status || ''}</span>
+                </td>
+                <td class="editable" data-field="startDate" data-taskid="${task.id}">${formatDate(task.startDate) || ''}</td>
+                <td class="editable" data-field="endDate" data-taskid="${task.id}">${formatDate(task.endDate) || ''}</td>
+                <td class="editable" data-field="duration" data-taskid="${task.id}">${task.duration || ''}</td>
+                <td class="material-cost-cell" data-taskcode="${task.taskId}"><span style="opacity:0.7">Auto</span></td>
+                <td class="man-cost-cell" data-taskid="${task.id}" data-taskcode="${task.taskId}"><span style="opacity:0.7">Auto</span></td>
+                <td class="total-cost-cell" data-taskid="${task.id}" data-taskcode="${task.taskId}"><span style="opacity:0.7">Auto</span></td>
+                <td class="editable" data-field="location" data-taskid="${task.id}">${task.location || ''}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm edit-task" data-id="${task.id}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </td>
+            `;
+            taskList.appendChild(tr);
+
+            let matExpCost = 0, manCost = 0;
+            const unsubMatExp = subscribeMatExpCostForTask(task.taskId, (_matExpCost) => {
+                matExpCost = _matExpCost;
+                const matCostCell = tr.querySelector('.material-cost-cell');
+                if (matCostCell) {
+                    matCostCell.innerHTML = `<span class="cost-badge">${formatCurrency(matExpCost, currency)}</span>`;
+                }
+                const totalCostCell = tr.querySelector('.total-cost-cell');
+                if (totalCostCell) {
+                    totalCostCell.innerHTML = `<span class="cost-badge">${formatCurrency(matExpCost + manCost, currency)}</span>`;
+                }
+            }, currency);
+            matExpCostUnsubscribers.push(unsubMatExp);
+
+            const unsubMan = subscribeManCostForTask(task.taskId, (_manCost) => {
+                manCost = _manCost;
+                const manCostCell = tr.querySelector('.man-cost-cell');
+                if (manCostCell) {
+                    manCostCell.innerHTML = `<span class="cost-badge">${formatCurrency(manCost, currency)}</span>`;
+                }
+                const totalCostCell = tr.querySelector('.total-cost-cell');
+                if (totalCostCell) {
+                    totalCostCell.innerHTML = `<span class="cost-badge">${formatCurrency(matExpCost + manCost, currency)}</span>`;
+                }
+            });
+            manCostUnsubscribers.push(unsubMan);
+        });
+
+        document.querySelectorAll('.editable').forEach(cell => {
+            cell.addEventListener('click', function() {
+                const taskId = this.dataset.taskid;
+                const fieldName = this.dataset.field;
+                let currentValue = this.textContent.trim();
+                if (fieldName === 'status') {
+                    const span = this.querySelector('span');
+                    currentValue = span ? span.textContent.trim() : currentValue;
+                    makeEditable(this, currentValue, fieldName, taskId, true, ['COMPLETED', 'ONGOING', 'PENDING']);
+                } else if (fieldName === 'startDate' || fieldName === 'endDate') {
+                    const taskRef = doc(db, "projectTasks", taskId);
+                    getDoc(taskRef).then(doc => {
+                        const dateValue = doc.exists() ? formatDateForInput(doc.data()[fieldName]) : '';
+                        makeEditable(this, dateValue, fieldName, taskId);
+                    });
+                } else {
+                    makeEditable(this, currentValue, fieldName, taskId);
+                }
+            });
+        });
+    }
+
+    // --- FILTER PERSISTENCE LOGIC START ---
+    const FILTER_STORAGE_KEY = `task-filters-${projectId}`;
+    function saveFiltersToStorage() {
+        const filters = {
+            search: searchInput.value,
+            status: statusFilter.value,
+            month: monthFilter.value,
+            year: yearFilter.value
+        };
+        localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(filters));
+    }
+    function loadFiltersFromStorage() {
+        const filters = JSON.parse(localStorage.getItem(FILTER_STORAGE_KEY) || '{}');
+        if (filters.search !== undefined) searchInput.value = filters.search;
+        if (filters.status !== undefined) statusFilter.value = filters.status;
+        if (filters.month !== undefined) monthFilter.value = filters.month;
+        if (filters.year !== undefined) yearFilter.value = filters.year;
+    }
+    // --- FILTER PERSISTENCE LOGIC END ---
+
+    async function generateGlobalTaskId() {
+        const now = new Date();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const yy = String(now.getFullYear()).slice(-2);
+        const prefix = `${mm}${yy}`;
+        const tasksQuery = query(
+            collection(db, "projectTasks"),
+            where("taskId", ">=", prefix + "-"),
+            where("taskId", "<", prefix + "-z")
+        );
+        const snapshot = await getDocs(tasksQuery);
+        let maxNum = 0;
+        snapshot.forEach(docSnap => {
+            const task = docSnap.data();
+            if (task.taskId && typeof task.taskId === "string" && task.taskId.startsWith(prefix + "-")) {
+                const n = parseInt(task.taskId.split('-')[1], 10);
+                if (!isNaN(n) && n > maxNum) maxNum = n;
+            }
+        });
+        const nextNum = maxNum + 1;
+        return `${prefix}-${nextNum}`;
+    }
+
+    async function openAddTaskModal() {
+        modalTitle.textContent = 'Add New Task';
+        taskForm.reset();
+        taskId.value = '';
+        locationInput.value = '';
+        materialCost.value = '';
+        manCost.value = '';
+        taskIdInput.value = '...';
+        taskModal.style.display = 'flex';
+        try {
+            const newTaskId = await generateGlobalTaskId();
+            taskIdInput.value = newTaskId;
+        } catch (err) {
+            console.error("Failed to auto-generate Task ID:", err);
+            taskIdInput.value = '';
+        }
+    }
+
+    async function openEditTaskModal(taskIdValue) {
+        try {
+            const taskRef = doc(db, "projectTasks", taskIdValue);
+            const taskDoc = await getDoc(taskRef);
+            if (taskDoc.exists()) {
+                const task = taskDoc.data();
+                modalTitle.textContent = 'Edit Task';
+                taskIdInput.value = task.taskId || '';
+                taskLine.value = task.taskLine || '';
+                taskDescription.value = task.taskDescription || '';
+                assignedTo.value = task.assignedTo || '';
+                locationInput.value = task.location || '';
+                status.value = task.status || '';
+                startDate.value = formatDateForInput(task.startDate) || '';
+                endDate.value = formatDateForInput(task.endDate) || '';
+                duration.value = task.duration || '';
+                materialCost.value = typeof task.materialCost === "number" ? task.materialCost : '';
+                manCost.value = typeof task.manCost === "number" ? task.manCost : '';
+                currency.value = task.currency || 'ZMW';
+                comment.value = task.comment || '';
+                taskId.value = taskDoc.id;
+                taskModal.style.display = 'flex';
+            }
+        } catch (error) {
+            console.error("Error loading task for edit: ", error);
+            alert("Error loading task. Please try again.");
+        }
+    }
+
+    function closeTaskModal() {
+        taskModal.style.display = 'none';
+    }
+
+    async function saveTask(e) {
+        e.preventDefault();
+        const newTaskIdValue = taskIdInput.value.trim();
+        const taskData = {
+            projectId: projectId,
+            taskId: newTaskIdValue,
+            taskLine: taskLine.value.trim() ? parseInt(taskLine.value.trim()) : null,
+            taskDescription: taskDescription.value.trim(),
+            assignedTo: assignedTo.value.trim(),
+            location: locationInput.value.trim(),
+            status: status.value,
+            startDate: startDate.value ? new Date(startDate.value) : null,
+            endDate: endDate.value ? new Date(endDate.value) : null,
+            duration: duration.value.trim(),
+            materialCost: materialCost.value ? parseFloat(materialCost.value) : 0,
+            manCost: manCost.value ? parseFloat(manCost.value) : 0,
+            currency: currency.value,
+            comment: comment.value.trim(),
+            updatedAt: new Date()
+        };
+        try {
+            saveTaskBtn.disabled = true;
+            saveTaskBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            if (!taskId.value) {
+                const tasksQuery = query(
+                    collection(db, "projectTasks"),
+                    where("taskId", "==", newTaskIdValue)
+                );
+                const snapshot = await getDocs(tasksQuery);
+                if (!snapshot.empty) {
+                    alert("Auto-generated Task ID already exists, retrying...");
+                    const retryId = await generateGlobalTaskId();
+                    taskIdInput.value = retryId;
+                    saveTaskBtn.disabled = false;
+                    saveTaskBtn.innerHTML = 'Save Task';
+                    return;
+                }
+                taskData.createdAt = new Date();
+                await addDoc(collection(db, "projectTasks"), taskData);
+            } else {
+                const taskRef = doc(db, "projectTasks", taskId.value);
+                await updateDoc(taskRef, taskData);
+            }
+            closeTaskModal();
+        } catch (error) {
+            console.error("Error saving task: ", error);
+            alert("Error saving task. Please try again.");
+        } finally {
+            saveTaskBtn.disabled = false;
+            saveTaskBtn.innerHTML = 'Save Task';
+        }
+    }
+
+    async function loadTasks(searchTerm = '', statusFilterVal = '', monthFilterVal = '', yearFilterVal = '') {
+        try {
+            const tasksQuery = query(
+                collection(db, "projectTasks"), 
+                where("projectId", "==", projectId)
+            );
+            onSnapshot(tasksQuery, (snapshot) => {
+                const tasks = [];
+                snapshot.forEach(doc => {
+                    tasks.push({ id: doc.id, ...doc.data() });
+                });
+                const filteredTasks = filterTasks(tasks, searchTerm.toLowerCase(), statusFilterVal, monthFilterVal, yearFilterVal);
+                renderTasks(filteredTasks);
+            });
+        } catch (error) {
+            console.error("Error loading tasks: ", error);
+            emptyState.innerHTML = '<i class="fas fa-exclamation-triangle"></i><p>Error loading tasks. Please try again.</p>';
+            emptyState.style.display = 'block';
+        }
+    }
+
+    addTaskBtn.addEventListener('click', openAddTaskModal);
+    closeModal.addEventListener('click', closeTaskModal);
+    cancelBtn.addEventListener('click', closeTaskModal);
+    taskForm.addEventListener('submit', saveTask);
+    window.addEventListener('click', (e) => {
+        if (e.target === taskModal) {
+            closeTaskModal();
+        }
+    });
+    taskList.addEventListener('click', (e) => {
+        if (e.target.closest('.edit-task')) {
+            const btn = e.target.closest('.edit-task');
+            openEditTaskModal(btn.dataset.id);
+        }
+    });
+
+    // Filter/search events with persistence
+    function handleFiltersChange() {
+        saveFiltersToStorage();
+        loadTasks(
+            searchInput.value.trim(),
+            statusFilter.value,
+            monthFilter.value,
+            yearFilter.value
+        );
+    }
+    searchInput.addEventListener('input', handleFiltersChange);
+    statusFilter.addEventListener('change', handleFiltersChange);
+    monthFilter.addEventListener('change', handleFiltersChange);
+    yearFilter.addEventListener('change', handleFiltersChange);
+
+    // Initialize the page with persisted filters
+    loadProjectName();
+    loadFiltersFromStorage();
+    loadTasks(
+        searchInput.value.trim(),
+        statusFilter.value,
+        monthFilter.value,
+        yearFilter.value
+    );
+
+    // Inactivity timeout
+    let inactivityTimeout;
+    function resetInactivityTimeout() {
+        clearTimeout(inactivityTimeout);
+        inactivityTimeout = setTimeout(() => {
+            // logout(); // implement your logout function if needed
+        }, 600000);
+    }
+    resetInactivityTimeout();
+    document.addEventListener('mousemove', resetInactivityTimeout);
+    document.addEventListener('keypress', resetInactivityTimeout);
+    document.addEventListener('click', resetInactivityTimeout);
+    document.addEventListener('touchstart', resetInactivityTimeout);
+
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'a' || e.key === 'c')) || e.key === 'F12') {
+            e.preventDefault();
+        }
+    });
+    </script>
+</body>
+</html>

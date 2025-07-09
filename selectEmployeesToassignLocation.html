@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IMS | Assign Employee to Project Task</title>
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    html, body { font-family: 'Open Sans', Arial, sans-serif; background: #f4f7fa; margin: 0; padding: 0; color: #333; }
+    #wrapper { min-height: 100vh; display: flex; flex-direction: column; }
+    .navbar { background: #2c3e50; color: #fff; min-height: 60px; box-shadow: 0 2px 6px rgba(0,0,0,0.07); width: 100%; position: fixed; top: 0; z-index: 1001; }
+    .navbar .navbar-header { display: flex; align-items: center; padding: 0 20px; }
+    .navbar .navbar-brand { color: #fff; font-weight: bold; font-size: 1.4rem; text-decoration: none; margin-right: 40px; }
+    .navbar .navbar-brand:hover { color: #1abc9c; }
+    .btn-danger { background: #666363 !important; border: none; border-radius: 4px; padding: 6px 16px; font-size: 15px; margin-left: 10px; color: #fff; }
+    .btn-danger:hover { background: #c0392b !important; }
+    .user-info { color: #fff; padding: 15px 50px 5px 50px; font-size: 16px; float: right; }
+    #page-wrapper { margin-top: 60px; padding: 32px; background: #f4f7fa; min-height: calc(100vh - 60px); }
+    .panel { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(44,62,80,0.04); margin-bottom: 30px; border: none; }
+    .panel-heading { background: #666363; color: #fff; padding: 18px 24px; font-size: 1.16rem; font-weight: bold; border-radius: 8px 8px 0 0; margin: 0; }
+    .panel-body { padding: 24px; }
+    .btn-primary { background: #8c9391; border: none; color: #fff !important; border-radius: 4px; padding: 10px 18px; margin-bottom: 10px; font-weight: 600; margin-right: 10px; font-size: 15px; }
+    .btn-primary:hover, .btn-primary:focus { background: #16a085; color: #fff !important; }
+    .btn-default { background: #ecf0f1; color: #2c3e50; border: none; border-radius: 4px; padding: 10px 18px; font-weight: 600; font-size: 15px; margin-right: 10px; }
+    .btn-default:hover, .btn-default:focus { background: #d0d7db; color: #2c3e50; }
+    .checkbox, .radio { margin-bottom: 12px; font-size: 1rem; }
+    .checkbox label, .radio label { cursor: pointer; }
+    .checkbox input[type="checkbox"], .radio input[type="checkbox"] { margin-right: 8px; }
+    .success-msg { color: #1abc9c; font-weight: bold; margin-top: 16px; font-size: 1.18rem; }
+    .error-msg { color: #e74c3c; font-weight: bold; margin-top: 16px; font-size: 1.18rem; }
+    .assign-form { background: #f7fafc; border-radius: 8px; padding: 20px 24px; margin-top: 30px; box-shadow: 0 2px 10px rgba(44,62,80,0.06); }
+    .assign-form label { font-weight: 600; margin-bottom: 6px; display: block; }
+    .assign-form input, .assign-form select { border-radius: 5px; font-size: 1rem; padding: 8px 12px; border: 1px solid #ccc; margin-bottom: 12px; width: 100%; }
+    .assign-form input:focus, .assign-form select:focus { border: 1.5px solid #1abc9c; outline: none; }
+    @media (max-width: 500px) { .navbar { min-height: 40px; } .navbar .navbar-header { padding: 0 6px; } .navbar .navbar-brand { font-size: 1rem; } #page-wrapper { padding: 6px 0; } .panel-body { padding: 7px 0; } .panel-heading { font-size: 1rem; padding: 12px 8px; } }
+  </style>
+</head>
+<body>
+  <div id="wrapper">
+    <nav class="navbar" role="navigation">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">IMS Portal</a>
+        <span class="user-info" style="margin-left:auto;">
+          Welcome Christopher Chishela&nbsp; 
+        </span>
+      </div>
+    </nav>
+    <div id="page-wrapper">
+      <div id="page-inner">
+        <h2 style="margin-top:0;">Select employee(s) to assign to a task</h2>
+        <hr />
+        <div class="row">
+          <div class="col-md-12">
+            <div class="panel panel-default sticky-panel">
+              <div class="panel-heading">
+                Select Employees, Project, Task and Assign
+              </div>
+              <div class="panel-body">
+                <form id="employee-select-form" autocomplete="off">
+                  <button type="button" id="select-all" class="btn btn-primary" style="margin-bottom: 10px;">Select All</button>
+                  <button type="button" id="deselect-all" class="btn btn-primary" style="margin-bottom: 10px;">Deselect All</button>
+                  <div id="employee-checkbox-list">
+                    <!-- Firestore employee checkboxes will appear here -->
+                  </div>
+                  <button type="submit" class="btn btn-default">Next</button>
+                  <button type="reset" class="btn btn-primary">Reset</button>
+                  <div id="form-message"></div>
+                </form>
+                
+                <!-- Project and Task Assignment Form -->
+                <form id="assign-form" class="assign-form" style="display:none;">
+                  <h4>Assign Selected Employees to Project Task</h4>
+                  <label for="project-select">Select Project:</label>
+                  <select id="project-select" required>
+                    <option value="">-- Select Project --</option>
+                  </select>
+                  <label for="task-select">Select Task:</label>
+                  <select id="task-select" required disabled>
+                    <option value="">-- Select Task --</option>
+                  </select>
+                  <button type="submit" class="btn btn-default" id="assign-btn" disabled>Assign</button>
+                  <button type="button" class="btn btn-primary" id="cancel-assign">Cancel</button>
+                  <div id="assign-message"></div>
+                </form>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIREBASE LOGIC -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, doc, query, where, getDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyDXhhy94Aqmaav6X0UsfMcmsBT539-aheU",
+      authDomain: "project-task-588c4.firebaseapp.com",
+      projectId: "project-task-588c4",
+      storageBucket: "project-task-588c4.appspot.com",
+      messagingSenderId: "411882772509",
+      appId: "1:411882772509:web:08d613186c101a99f38ef4",
+      measurementId: "G-JMFLFYEM0F"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Fetch employees from Firestore and render as checkboxes
+    const employeeListDiv = document.getElementById('employee-checkbox-list');
+    let employeesData = [];
+    onSnapshot(collection(db, "employees"), (snapshot) => {
+      employeesData = [];
+      employeeListDiv.innerHTML = "";
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        if (data.role === "2" || data.role === 2 || data.role === "Employee" || data.role === "employee") {
+          employeesData.push({
+            id: docSnap.id,
+            empId: data.empId || "-",
+            name: data.name || "-",
+            surname: data.surname || "",
+          });
+        }
+      });
+
+      employeesData.sort((a, b) => (a.empId || "").localeCompare(b.empId || ""));
+
+      employeesData.forEach(e => {
+        const div = document.createElement('div');
+        div.className = "checkbox";
+        div.innerHTML = `<label>
+          <input type="checkbox" name="employees[]" value="${e.id}"/> &nbsp;${e.empId} &rarr; ${e.name} ${e.surname}
+        </label>`;
+        employeeListDiv.appendChild(div);
+      });
+    });
+
+    // Select/Deselect All Functionality
+    const selectAllBtn = document.getElementById('select-all');
+    const deselectAllBtn = document.getElementById('deselect-all');
+    const getCheckboxes = () => document.querySelectorAll('input[name="employees[]"]');
+    selectAllBtn.onclick = function() { getCheckboxes().forEach(cb => cb.checked = true); };
+    deselectAllBtn.onclick = function() { getCheckboxes().forEach(cb => cb.checked = false); };
+
+    // Show assign form when employees selected
+    const empForm = document.getElementById('employee-select-form');
+    const assignForm = document.getElementById('assign-form');
+    const cancelAssign = document.getElementById('cancel-assign');
+    const messageDiv = document.getElementById('form-message');
+    const assignMsg = document.getElementById('assign-message');
+    let selectedEmployeeIds = [];
+
+    empForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(empForm);
+      const employees = formData.getAll('employees[]');
+      if (employees.length === 0) {
+        messageDiv.innerHTML = '<div class="error-msg">Please select at least one employee!</div>';
+        return;
+      }
+      selectedEmployeeIds = employees;
+      empForm.style.display = "none";
+      assignForm.style.display = "block";
+      assignMsg.innerHTML = "";
+      messageDiv.innerHTML = "";
+
+      // Load projects dropdown
+      loadProjectsDropdown();
+    });
+
+    cancelAssign.onclick = function() {
+      empForm.style.display = "block";
+      assignForm.style.display = "none";
+      assignForm.reset();
+      assignMsg.innerHTML = "";
+    };
+
+    // --- Project and Task Dropdown Logic ---
+    const projectSelect = document.getElementById('project-select');
+    const taskSelect = document.getElementById('task-select');
+    const assignBtn = document.getElementById('assign-btn');
+
+    function loadProjectsDropdown() {
+      projectSelect.innerHTML = '<option value="">-- Select Project --</option>';
+      onSnapshot(collection(db, "projectDashboard"), (snapshot) => {
+        projectSelect.innerHTML = '<option value="">-- Select Project --</option>';
+        snapshot.forEach(docSnap => {
+          const data = docSnap.data();
+          const option = document.createElement('option');
+          option.value = docSnap.id;
+          option.textContent = `${data.name} (${data.client})`;
+          projectSelect.appendChild(option);
+        });
+      });
+      // Reset tasks dropdown
+      taskSelect.innerHTML = '<option value="">-- Select Task --</option>';
+      taskSelect.disabled = true;
+      assignBtn.disabled = true;
+    }
+
+    projectSelect.addEventListener('change', function() {
+      const projectId = projectSelect.value;
+      taskSelect.innerHTML = '<option value="">-- Select Task --</option>';
+      taskSelect.disabled = true;
+      assignBtn.disabled = true;
+      if (!projectId) return;
+      // Load tasks for this project, but ignore those marked as COMPLETED
+      const q = query(
+        collection(db, "projectTasks"),
+        where("projectId", "==", projectId)
+      );
+      onSnapshot(q, (snapshot) => {
+        let hasTasks = false;
+        taskSelect.innerHTML = '<option value="">-- Select Task --</option>';
+        snapshot.forEach(docSnap => {
+          const data = docSnap.data();
+          // Ignore COMPLETED tasks
+          if ((data.status || '').toUpperCase() === 'COMPLETED') return;
+          hasTasks = true;
+          const option = document.createElement('option');
+          option.value = docSnap.id;
+          option.textContent = `${data.taskId || ''} - ${data.taskDescription || ''}`;
+          taskSelect.appendChild(option);
+        });
+        taskSelect.disabled = !hasTasks;
+      });
+    });
+
+    taskSelect.addEventListener('change', function() {
+      assignBtn.disabled = !taskSelect.value;
+    });
+
+    // Handle assignment form submission (writes to locationHistory for transfer history)
+    assignForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const projectId = projectSelect.value;
+      const taskId = taskSelect.value;
+      if (!projectId || !taskId) {
+        assignMsg.innerHTML = '<div class="error-msg">Please select both project and task!</div>';
+        return;
+      }
+      try {
+        // Get the selected task's description, taskId, and location for display in history
+        const taskDocSnap = await getDoc(doc(db, "projectTasks", taskId));
+        let taskDescription = "";
+        let taskIdDisplay = "";
+        let location = "";
+        if (taskDocSnap.exists()) {
+          const t = taskDocSnap.data();
+          taskDescription = t.taskDescription || "";
+          taskIdDisplay = t.taskId || "";
+          location = t.location || "";
+        }
+
+        // Save each employee's assignment to locationHistory (for transfer history/history table)
+        for (const empId of selectedEmployeeIds) {
+          await addDoc(collection(db, "locationHistory"), {
+            employeeId: empId,
+            projectId: projectId,
+            taskId: taskIdDisplay,
+            taskDescription: taskDescription,
+            location: location,
+            status: "Assigned",
+            startDate: serverTimestamp(),
+            transferredAt: serverTimestamp()
+          });
+        }
+        assignMsg.innerHTML = '<div class="success-msg">Assignment saved successfully!</div>';
+        assignForm.reset();
+        assignBtn.disabled = true;
+        setTimeout(() => {
+          assignForm.style.display = "none";
+          empForm.style.display = "block";
+        }, 1200);
+      } catch (err) {
+        assignMsg.innerHTML = '<div class="error-msg">Error: ' + err.message + '</div>';
+      }
+    });
+
+    empForm.addEventListener('reset', function() {
+      messageDiv.innerHTML = '';
+    });
+  </script>
+</body>
+</html>
