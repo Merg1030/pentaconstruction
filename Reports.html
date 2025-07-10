@@ -63,6 +63,15 @@
     table, tr, td, th { page-break-inside: avoid !important; }
     .pdf-page-break { page-break-before: always; }
     #report-export-section { overflow: visible !important; }
+    /* Highlight Inventory Flow section */
+    .inventory-flow-section h2 {
+      background: #e2f0d9;
+      color: #1976d2;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-top: 32px;
+      margin-bottom: 0;
+    }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
@@ -472,29 +481,35 @@
       mainHtml += cashReportHtml;
       // INVENTORY FLOW REPORT (with heading, table, and total)
       mainHtml += `
-<h2 style="color:#1976d2;">${periodLabel} Out Flow Inventory Report</h2>
-<div class="total-cost-incurred">Total Cost Incurred: ZMW ${totalCostIncurred.toLocaleString(undefined, {maximumFractionDigits:2})}</div>
-<h3>Inventory Flow Report</h3>
-<table class="report-table">
-  <thead>
-    <tr>
-      <th>Project Name</th>
-      <th>Cost Incurred</th>
-    </tr>
-  </thead>
-  <tbody>`;
-      Object.entries(stockTotals).forEach(([projectName, value]) => {
-        mainHtml += `<tr>
-          <td>${projectName}</td>
-          <td>${Number(value).toLocaleString(undefined, {maximumFractionDigits:2})}</td>
-        </tr>`;
-      });
+<div class="inventory-flow-section">
+  <h2>${periodLabel} Out Flow Inventory Report</h2>
+  <div class="total-cost-incurred">Total Cost Incurred: ZMW ${totalCostIncurred.toLocaleString(undefined, {maximumFractionDigits:2})}</div>
+  <h3>Inventory Flow Report</h3>
+  <table class="report-table">
+    <thead>
+      <tr>
+        <th>Project Name</th>
+        <th>Cost Incurred</th>
+      </tr>
+    </thead>
+    <tbody>`;
+      if (Object.keys(stockTotals).length === 0) {
+        mainHtml += `<tr><td colspan="2" style="text-align:center;color:#888;">No inventory outflow data for this period.</td></tr>`;
+      } else {
+        Object.entries(stockTotals).forEach(([projectName, value]) => {
+          mainHtml += `<tr>
+            <td>${projectName}</td>
+            <td>${Number(value).toLocaleString(undefined, {maximumFractionDigits:2})}</td>
+          </tr>`;
+        });
+      }
       mainHtml += `<tr class="total-row">
         <td>Total Spent</td>
         <td>${Number(totalStockSpent).toLocaleString(undefined, {maximumFractionDigits:2})}</td>
       </tr>
-  </tbody>
-</table>
+    </tbody>
+  </table>
+</div>
 <!-- MAN HOUR SUMMARY -->
 <table class="report-table">
   <thead>
