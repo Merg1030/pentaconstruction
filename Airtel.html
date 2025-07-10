@@ -78,7 +78,6 @@
       font-size: 1.25em;
       background: #fff;
       border-radius: 6px;
-      
       padding: 2px 8px;
       margin-top: 3px;
     }
@@ -301,16 +300,23 @@
       }
     );
 
+    // --- FIXED renderSummaryBar FUNCTION ---
     function renderSummaryBar() {
       const {week: selectedWeek, year: selectedYear} = getSelectedWeekYear();
       const companies = ["FPS", "HML", "HL", "HFL", "HEL"];
       const totals = {};
       companies.forEach(c => totals[c] = 0);
       allExpenses.forEach(exp => {
-        if (exp._weekyear && exp._weekyear.week === selectedWeek && exp._weekyear.year === selectedYear) {
-          if (companies.includes(exp.company)) {
-            const t = (parseFloat(exp.lunch) || 0) + (parseFloat(exp.transport) || 0);
-            totals[exp.company] += t;
+        if (
+          exp._weekyear &&
+          exp._weekyear.week === selectedWeek &&
+          exp._weekyear.year === selectedYear
+        ) {
+          const expCompany = (exp.company || "").trim().toUpperCase();
+          if (companies.includes(expCompany)) {
+            // FIX: sum transport + lunch + airtime (matches "Total" column)
+            const t = (parseFloat(exp.lunch) || 0) + (parseFloat(exp.transport) || 0) + (parseFloat(exp.airtime) || 0);
+            totals[expCompany] += t;
           }
         }
       });
@@ -370,7 +376,6 @@
 
       const satDate = getSaturdayOfWeek(selectedYear, selectedWeek);
       const satString = formatDate(satDate.toISOString().split("T")[0]);
-      // Show only Saturday date, then 5 blanks, then the sums in the correct columns.
       expensesTableTotalRow.innerHTML = `
         <td>${satString}<br><b>TOTAL</b></td>
         <td></td>
@@ -422,9 +427,11 @@
         exp._weekyear && exp._weekyear.week === selectedWeek && exp._weekyear.year === selectedYear
       );
       filtered.forEach(exp => {
-        if (companies.includes(exp.company)) {
-          const t = (parseFloat(exp.lunch) || 0) + (parseFloat(exp.transport) || 0);
-          totals[exp.company] += t;
+        const expCompany = (exp.company || "").trim().toUpperCase();
+        if (companies.includes(expCompany)) {
+          // FIX: sum transport + lunch + airtime (matches "Total" column)
+          const t = (parseFloat(exp.lunch) || 0) + (parseFloat(exp.transport) || 0) + (parseFloat(exp.airtime) || 0);
+          totals[expCompany] += t;
         }
       });
       companies.forEach(c => {
