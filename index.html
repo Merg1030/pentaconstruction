@@ -122,8 +122,8 @@
       const warningMessage = document.getElementById("warningMessage");
 
       const validUsers = [
-        { username: "faiyaz mulla", password: "PENTACON" },
-        { username: "christopher chishela", password: "PENTACON" }
+        { username: "faiyaz mulla", password: "PENTACON23" },
+        { username: "chishela", password: "PENTACON." }
       ];
 
       const isValid = validUsers.some(user => user.username === username && user.password === password);
@@ -169,6 +169,40 @@
     // Export functions to global scope
     window.login = login;
     window.togglePasswordVisibility = togglePasswordVisibility;
+     // Reset inactivity timer
+    function resetInactivityTimeout() {
+        clearTimeout(window.inactivityTimer);
+        window.inactivityTimer = setTimeout(() => {
+            // You can do something here after a period of inactivity
+            console.log('User is inactive');
+        }, 60000); // 1 minute
+    }
+
+    // Event listeners for detecting activity
+    document.addEventListener('mousemove', resetInactivityTimeout);
+    document.addEventListener('keypress', resetInactivityTimeout);
+    document.addEventListener('click', resetInactivityTimeout);
+    document.addEventListener('touchstart', resetInactivityTimeout);
+
+    // 🔒 Disable right-click context menu
+    document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+    });
+
+    // 🔒 Disable dev tools shortcuts
+    document.addEventListener('keydown', function (e) {
+        if (
+            e.key === "F12" || // Dev tools
+            (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "i") || // Ctrl+Shift+I
+            (e.ctrlKey && e.key.toLowerCase() === "u") || // View source
+            (e.ctrlKey && e.key.toLowerCase() === "s") || // Save
+            (e.ctrlKey && e.key.toLowerCase() === "a") || // Select all
+            (e.ctrlKey && e.key.toLowerCase() === "c")    // Copy
+        ) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    });
   </script>
 </head>
 
