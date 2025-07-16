@@ -4,13 +4,11 @@
     <meta charset="UTF-8">
     <title>All Project Tasks | Task Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-      /* --- Polished Styles --- */
       body { font-family: 'Segoe UI', 'Roboto', sans-serif; background: #181a22; color: #e0e0e0; margin: 0; }
       .container { margin: 0 auto; padding: 8px; }
-      .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; }
+      .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; gap: 10px; }
       .btn { display: inline-flex; align-items: center; gap: 6px; padding: 5px 13px; border-radius: 7px; font-weight: 500; cursor: pointer; text-decoration: none; border: none; font-size: 13px; transition: all 0.2s ease; }
       .btn-outline { background: none; border: 1.2px solid #33394c; color: #4361ee; }
       .btn-outline:hover { background: #23263a; }
@@ -85,10 +83,10 @@
             <button class="btn btn-outline" id="toggleModeBtn"><i class="fas fa-moon"></i> Dark Mode</button>
         </div>
         <div class="project-header" id="projectHeaderSticky">
-            <div class="project-title-sticky" id="projectNameHeader">Project</div>
+            <div class="project-title-sticky" id="projectNameHeader">HML-LUMUMBA REFURB</div>
             <div class="project-meta">
-                <div><label>PROJECT TITLE:</label> <span id="projectTitleHeader"></span></div>
-                <div><label>PROJECT MANAGER:</label> <span id="projectManagerHeader"></span></div>
+                <div><label>PROJECT TITLE:</label> <span id="projectTitleHeader">27450 Lumumba - HML - Refurbishment</span></div>
+                <div><label>PROJECT MANAGER:</label> <span id="projectManagerHeader">Chishecc</span></div>
             </div>
         </div>
         <div class="filters-bar">
@@ -156,7 +154,7 @@
     </div>
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-    import { getFirestore, doc, getDoc, collection, query, where, onSnapshot, updateDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, collection, query, onSnapshot, updateDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
     const firebaseConfig = {
         apiKey: "AIzaSyDXhhy94Aqmaav6X0UsfMcmsBT539-aheU",
         authDomain: "project-task-588c4.firebaseapp.com",
@@ -169,31 +167,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // ---- Project ID from URL ----
-    const urlParams = new URLSearchParams(window.location.search);
-    const projectId = urlParams.get('id');
-    if (!projectId) {
-        window.location.href = 'dashboard.html';
-    }
-
-    // ---- Project Info for Header ----
-    async function loadProjectHeaderInfo() {
-        try {
-            const projectRef = doc(db, "projectDashboard", projectId);
-            const projectDoc = await getDoc(projectRef);
-            if (projectDoc.exists()) {
-                const project = projectDoc.data();
-                document.getElementById("projectNameHeader").textContent = project.name || "Project";
-                document.getElementById("projectTitleHeader").textContent = project.title || "";
-                document.getElementById("projectManagerHeader").textContent = project.manager || "";
-            }
-        } catch (error) {
-            // fallback to default
-        }
-    }
-    loadProjectHeaderInfo();
-
-    // ---- UI Vars ----
     const ganttTableCard = document.getElementById('ganttTableCard');
     const ganttTableScroll = document.getElementById('ganttTableScroll');
     const toggleGanttBtn = document.getElementById('toggleGanttBtn');
@@ -227,7 +200,6 @@
     const body = document.body;
     const addTaskBtn = document.getElementById('addTaskBtn');
 
-    // ---- Theme ----
     toggleModeBtn.addEventListener('click', function() {
         body.classList.toggle('light-mode');
         if (body.classList.contains('light-mode')) {
@@ -245,7 +217,6 @@
         toggleModeBtn.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
     }
 
-    // ---- Utility Functions ----
     function formatDate(dateString) {
         if (!dateString) return '';
         const date = dateString.toDate ? dateString.toDate() : new Date(dateString);
@@ -276,7 +247,6 @@
         return 'status-badge status-pending';
     }
 
-    // ---- Tasks Logic ----
     let allTasks = [];
     let unsubMain = null;
     let subUnsubs = {};
@@ -298,53 +268,47 @@
       subUnsubs = {};
       allTasks = [];
       subTaskCostMap = {};
-      // --- FILTER for current project ---
-      unsubMain = onSnapshot(
-        query(collection(db, "chrischris"), where("projectId", "==", projectId)),
-        async (snapshot) => {
-          allTasks = [];
-          let promises = [];
-          snapshot.forEach(docSnap => {
-            const docData = { id: docSnap.id, ...docSnap.data(), subTasks: [] };
-            docData.expanded = expandedTasks[docSnap.id] || false;
-            allTasks.push(docData);
-            promises.push(new Promise((resolve) => {
-              const unsub = onSnapshot(
-                query(collection(db, "chrischris", docSnap.id, "subtasks"), where("projectId", "==", projectId)),
-                (subSnap) => {
-                  docData.subTasks = [];
-                  let agg = {material:0, man:0, total:0, duration:0};
-                  let costPromises = [];
-                  subSnap.forEach(subDoc => {
-                    let subData = { id: subDoc.id, ...subDoc.data() };
-                    docData.subTasks.push(subData);
-                    costPromises.push(getSubtaskAggCosts(subData).then(costs => {
-                      subData.materialCost = costs.materialCost;
-                      subData.manCost = costs.manCost;
-                      subData.totalCost = costs.totalCost;
-                      subData.duration = costs.duration;
-                      agg.material += subData.materialCost;
-                      agg.man += subData.manCost;
-                      agg.total += subData.totalCost;
-                      agg.duration += subData.duration;
-                    }));
-                  });
-                  Promise.all(costPromises).then(() => {
-                    subTaskCostMap[docSnap.id] = agg;
-                    renderTasks(filterTasks(allTasks, statusFilter.value));
-                    renderGanttCalendar(filterTasks(allTasks, statusFilter.value));
-                    autoCompleteMainTaskIfNeeded(docSnap.id, docData, docData.subTasks);
-                    resolve();
-                  });
-                }
-              );
-              subUnsubs[docSnap.id] = unsub;
-            }));
-          });
-          await Promise.all(promises);
-          renderTasks(filterTasks(allTasks, statusFilter.value));
-          renderGanttCalendar(filterTasks(allTasks, statusFilter.value));
+      unsubMain = onSnapshot(query(collection(db, "chrischris")), async (snapshot) => {
+        allTasks = [];
+        let promises = [];
+        snapshot.forEach(docSnap => {
+          const docData = { id: docSnap.id, ...docSnap.data(), subTasks: [] };
+          docData.expanded = expandedTasks[docSnap.id] || false;
+          allTasks.push(docData);
+          promises.push(new Promise((resolve) => {
+            const unsub = onSnapshot(collection(db, "chrischris", docSnap.id, "subtasks"), (subSnap) => {
+              docData.subTasks = [];
+              let agg = {material:0, man:0, total:0, duration:0};
+              let costPromises = [];
+              subSnap.forEach(subDoc => {
+                let subData = { id: subDoc.id, ...subDoc.data() };
+                docData.subTasks.push(subData);
+                costPromises.push(getSubtaskAggCosts(subData).then(costs => {
+                  subData.materialCost = costs.materialCost;
+                  subData.manCost = costs.manCost;
+                  subData.totalCost = costs.totalCost;
+                  subData.duration = costs.duration;
+                  agg.material += subData.materialCost;
+                  agg.man += subData.manCost;
+                  agg.total += subData.totalCost;
+                  agg.duration += subData.duration;
+                }));
+              });
+              Promise.all(costPromises).then(() => {
+                subTaskCostMap[docSnap.id] = agg;
+                renderTasks(filterTasks(allTasks, statusFilter.value));
+                renderGanttCalendar(filterTasks(allTasks, statusFilter.value));
+                autoCompleteMainTaskIfNeeded(docSnap.id, docData, docData.subTasks);
+                resolve();
+              });
+            });
+            subUnsubs[docSnap.id] = unsub;
+          }));
         });
+        await Promise.all(promises);
+        renderTasks(filterTasks(allTasks, statusFilter.value));
+        renderGanttCalendar(filterTasks(allTasks, statusFilter.value));
+      });
     }
 
     async function getSubtaskAggCosts(subData) {
@@ -515,7 +479,6 @@
       const taskId = `T${Date.now()}`;
       try {
         await addDoc(collection(db, "chrischris"), {
-          projectId,
           taskId, taskDescription: taskDesc, assignedTo, location,
           status: status.toUpperCase(),
           startDate: startDate ? new Date(startDate) : null,
@@ -545,7 +508,6 @@
       const taskId = `S${Date.now()}`;
       try {
         await addDoc(collection(db, "chrischris", mainId, "subtasks"), {
-          projectId,
           taskId, taskDescription: taskDesc, assignedTo, location,
           status: status.toUpperCase(),
           startDate: startDate ? new Date(startDate) : null,
@@ -732,7 +694,6 @@
       loadAllTasks(statusFilter.value);
     });
     loadAllTasks(statusFilter.value);
-
     </script>
 </body>
 </html>
