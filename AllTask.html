@@ -37,6 +37,12 @@
       .cost-badge { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 11.5px; font-weight: 600; background: rgba(67, 97, 238, 0.1); color: #4361ee; border: 1px solid #4361ee; }
       .empty-state { text-align: center; padding: 16px; color: #e0e0e0; opacity: 0.7; }
       .empty-state i { font-size: 34px; opacity: 0.5; }
+      .subtask-row td { background: #20223a !important; color: #b0e0ff !important; }
+      .subtask-row td.subtask-desc { padding-left: 24px !important; }
+      .subtask-arrow { text-align: left; padding-left: 10px; color: #4cc9f0; font-size: 15px; }
+      .subsubtask-row td { background: #181a22 !important; color: #a0e0f0 !important; }
+      .subsubtask-row td.subtask-desc { padding-left: 40px !important; }
+      .main-task-expand { cursor: pointer; color: #4361ee; margin-right: 6px; }
     </style>
 </head>
 <body class="dark-mode">
@@ -105,14 +111,14 @@
                         <tr>
                             <th>PROJECT</th>
                             <th>TASK ID</th>
-                            <th class="editable">TASK LINE</th>
+                            <th>TASK LINE</th>
                             <th>DESCRIPTION</th>
-                            <th class="editable">ASSIGNED</th>
-                            <th class="editable">LOCATION</th>
-                            <th class="editable">STATUS</th>
-                            <th class="editable">START DATE</th>
-                            <th class="editable">END DATE</th>
-                            <th class="editable">DURATION</th>
+                            <th>ASSIGNED</th>
+                            <th>LOCATION</th>
+                            <th>STATUS</th>
+                            <th>START DATE</th>
+                            <th>END DATE</th>
+                            <th>DURATION</th>
                             <th>MATERIAL COST</th>
                             <th>MAN COST</th>
                             <th>TOTAL COST</th>
@@ -178,14 +184,7 @@
         const date = dateString.toDate ? dateString.toDate() : new Date(dateString);
         return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
     }
-    function formatDateForInput(dateString) {
-        if (!dateString) return '';
-        const date = dateString.toDate ? dateString.toDate() : new Date(dateString);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    }
+
     function formatCurrency(amount, curr='ZMW') {
         if (!amount && amount !== 0) return '';
         const formatter = new Intl.NumberFormat(undefined, {
@@ -195,6 +194,7 @@
         });
         return formatter.format(amount);
     }
+
     function getStatusBadge(status) {
         if (!status) return '';
         status = status.toUpperCase();
@@ -219,8 +219,7 @@
                 (task.taskDescription && task.taskDescription.toLowerCase().includes(searchTerm)) ||
                 (task.assignedTo && task.assignedTo.toLowerCase().includes(searchTerm)) ||
                 (task.status && task.status.toLowerCase().includes(searchTerm)) ||
-                (task.location && task.location.toLowerCase().includes(searchTerm)) ||
-                (task.comment && task.comment.toLowerCase().includes(searchTerm));
+                (task.location && task.location.toLowerCase().includes(searchTerm));
             const matchesProject = !projectFilterVal || (task.projectId === projectFilterVal);
             const matchesStatus = !statusFilterVal || (task.status && task.status.toUpperCase() === statusFilterVal.toUpperCase());
             let matchesMonth = true;
@@ -268,163 +267,75 @@
     }
 
     let projectNameCache = {};
+    let expandedTasks = {};
 
-    function makeEditable(cell, value, fieldName, taskId, isSelect = false, options = []) {
-        cell.innerHTML = '';
-        if (isSelect) {
-            const select = document.createElement('select');
-            select.className = 'editable-select';
-            options.forEach(option => {
-                const optElement = document.createElement('option');
-                optElement.value = option;
-                optElement.textContent = option;
-                if (value && value.toUpperCase() === option.toUpperCase()) {
-                    optElement.selected = true;
-                }
-                select.appendChild(optElement);
-            });
-            select.addEventListener('change', async () => {
-                await updateTaskField(taskId, fieldName, select.value);
-                const badgeClass = getStatusBadge(select.value);
-                cell.innerHTML = `<span class="${badgeClass}">${select.value}</span>`;
-            });
-            cell.appendChild(select);
-            select.focus();
-        } else {
-            const input = document.createElement('input');
-            input.type = (fieldName.includes('Date')) ? 'date'
-                        : (['materialCost'].includes(fieldName)) ? 'number'
-                        : 'text';
-            input.className = 'editable-input';
-            if (fieldName.includes('Date')) {
-                input.value = formatDateForInput(value) || '';
-            } else {
-                input.value = value || '';
-            }
-            if (['materialCost'].includes(fieldName)) {
-                input.step = '0.01';
-            }
-            input.addEventListener('blur', async () => {
-                let newValue = input.value;
-                if (['materialCost'].includes(fieldName)) {
-                    newValue = parseFloat(newValue) || 0;
-                } else if (fieldName.includes('Date') && newValue) {
-                    newValue = new Date(newValue);
-                }
-                await updateTaskField(taskId, fieldName, newValue);
-                if (['materialCost'].includes(fieldName)) {
-                    cell.innerHTML = newValue ? `<span class="cost-badge">${formatCurrency(newValue)}</span>` : '';
-                } else {
-                    cell.textContent = newValue || '';
-                }
-            });
-            input.addEventListener('keypress', async (e) => {
-                if (e.key === 'Enter') {
-                    let newValue = input.value;
-                    if (['materialCost'].includes(fieldName)) {
-                        newValue = parseFloat(newValue) || 0;
-                    } else if (fieldName.includes('Date') && newValue) {
-                        newValue = new Date(newValue);
-                    }
-                    await updateTaskField(taskId, fieldName, newValue);
-                    input.blur();
-                }
-            });
-            cell.appendChild(input);
-            input.focus();
-        }
-    }
-
-    async function updateTaskField(taskId, fieldName, value) {
-        try {
-            const taskRef = doc(db, "projectTasks", taskId);
-            if (value === '' && (fieldName === 'assignedTo' || fieldName === 'duration' || fieldName === 'comment' || fieldName === 'location')) {
-                value = null;
-            }
-            await updateDoc(taskRef, {
-                [fieldName]: value,
-                updatedAt: new Date()
-            });
-        } catch (error) {
-            console.error("Error updating task field: ", error);
-            alert("Error updating task. Please try again.");
-        }
-    }
-
-    // MATERIAL + GENERAL EXPENSES COST: Sum from materialsUsage and General expenses for the given taskId
-    let matExpCostUnsubscribers = [];
-    function subscribeMatExpCostForTask(taskId, cb, currency = 'ZMW') {
-        // Subscriptions for both collections
-        let matTotal = 0, expTotal = 0;
-        let matUnsub, expUnsub;
-        // Subscribe to materialsUsage
-        matUnsub = onSnapshot(query(collection(db, "materialsUsage"), where("taskId", "==", taskId)), async (snap) => {
-            let tempTotal = 0;
-            // Gather unit prices
-            const materialCache = {};
-            for (const docSnap of snap.docs) {
-                const d = docSnap.data();
-                if (d.reversed) continue;
-                if (d.materialId && materialCache[d.materialId] === undefined) {
-                    try {
-                        const matSnap = await getDoc(doc(db, "materials", d.materialId));
-                        materialCache[d.materialId] = matSnap.exists() ? matSnap.data().unitPrice : 0;
-                    } catch { materialCache[d.materialId] = 0; }
-                }
-            }
-            snap.forEach(doc => {
-                const d = doc.data();
-                if (d.reversed) return;
-                const qty = Number(d.quantity) || 0;
-                let unit = Number(d.unitPrice) || 0;
-                if ((!d.unitPrice || d.unitPrice === "-") && d.materialId && materialCache[d.materialId] !== undefined) {
-                    unit = Number(materialCache[d.materialId]) || 0;
-                }
-                tempTotal += qty * unit;
-            });
-            matTotal = tempTotal;
-            cb(matTotal + expTotal);
+    async function getSubTasks(mainTaskId) {
+        const snap = await getDocs(collection(db, "projectTasks", mainTaskId, "subtasks"));
+        let subTasks = [];
+        snap.forEach(doc => {
+            subTasks.push({ id: doc.id, ...doc.data() });
         });
-        // Subscribe to General expenses
-        expUnsub = onSnapshot(query(collection(db, "General expenses"), where("taskId", "==", taskId)), (snap) => {
-            let tempTotal = 0;
-            snap.forEach(doc => {
-                const d = doc.data();
-                if (typeof d.amount === "number") tempTotal += d.amount;
-            });
-            expTotal = tempTotal;
-            cb(matTotal + expTotal);
-        });
-        return () => { matUnsub && matUnsub(); expUnsub && expUnsub(); };
+        return subTasks;
     }
 
-    // MAN COST
-    let manCostUnsubscribers = [];
-    function subscribeManCostForTask(taskId, cb, rate = 20) {
+    async function getSubSubTasks(mainTaskId, subTaskId) {
+        const snap = await getDocs(collection(db, "projectTasks", mainTaskId, "subtasks", subTaskId, "subsubtasks"));
+        let subSubTasks = [];
+        snap.forEach(doc => {
+            subSubTasks.push({ id: doc.id, ...doc.data() });
+        });
+        return subSubTasks;
+    }
+
+    async function getMaterialCostForTask(taskId) {
+        if (!taskId) return 0;
+        const q = query(collection(db, "materialsUsage"), where("taskId", "==", taskId));
+        let sum = 0;
+        const snap = await getDocs(q);
+        
+        const materialIds = new Set();
+        snap.forEach(doc => {
+            const d = doc.data();
+            if (d.materialId) materialIds.add(d.materialId);
+        });
+        
+        const materialPriceMap = {};
+        await Promise.all([...materialIds].map(async materialId => {
+            const matSnap = await getDoc(doc(db, "materials", materialId));
+            if (matSnap.exists()) {
+                materialPriceMap[materialId] = matSnap.data().unitPrice || 0;
+            }
+        }));
+        
+        snap.forEach(doc => {
+            const d = doc.data();
+            if (!d.reversed && d.quantity && d.materialId) {
+                const price = materialPriceMap[d.materialId] || 0;
+                sum += Number(d.quantity) * Number(price);
+            }
+        });
+        
+        return sum;
+    }
+
+    async function getManHoursCostForTask(taskId, rate = 20) {
+        if (!taskId) return 0;
         const q = query(collection(db, "locationHistory"), where("taskId", "==", taskId));
-        return onSnapshot(q, (snap) => {
-            let totalMH = 0;
-            snap.forEach(doc => {
-                const d = doc.data();
-                if (d.mh && !isNaN(d.mh)) {
-                    totalMH += Number(d.mh);
-                }
-            });
-            cb(totalMH * rate);
+        let sum = 0;
+        const snap = await getDocs(q);
+        snap.forEach(doc => {
+            const d = doc.data();
+            if (d.mh && !isNaN(d.mh)) sum += Number(d.mh);
         });
+        return sum * rate;
     }
 
     async function loadAllTasks(searchTerm = '', projectFilterVal = '', statusFilterVal = '', monthFilterVal = '', yearFilterVal = '') {
-        manCostUnsubscribers.forEach(unsub => unsub());
-        manCostUnsubscribers = [];
-        matExpCostUnsubscribers.forEach(unsub => unsub());
-        matExpCostUnsubscribers = [];
-
         const tasksQuery = query(collection(db, "projectTasks"));
         onSnapshot(tasksQuery, async (snapshot) => {
             const tasks = [];
             snapshot.forEach(doc => {
-                tasks.push({ id: doc.id, ...doc.data() });
+                tasks.push({ id: doc.id, ...doc.data(), expanded: expandedTasks[doc.id] || false });
             });
 
             const projectIds = [...new Set(tasks.map(t => t.projectId).filter(Boolean))];
@@ -442,101 +353,131 @@
         });
     }
 
-    function renderTasks(tasks) {
-        manCostUnsubscribers.forEach(unsub => unsub());
-        manCostUnsubscribers = [];
-        matExpCostUnsubscribers.forEach(unsub => unsub());
-        matExpCostUnsubscribers = [];
-
+    async function renderTasks(tasks) {
         taskList.innerHTML = '';
         if (tasks.length === 0) {
             emptyState.style.display = 'block';
             return;
         }
         emptyState.style.display = 'none';
-        tasks.sort((a, b) => {
-            const ad = a.startDate ? (a.startDate.toDate ? a.startDate.toDate() : new Date(a.startDate)) : 0;
-            const bd = b.startDate ? (b.startDate.toDate ? b.startDate.toDate() : new Date(b.startDate)) : 0;
-            return bd - ad || (projectNameCache[a.projectId] || '').localeCompare(projectNameCache[b.projectId] || '');
-        });
-        tasks.forEach(task => {
-            const currency = task.currency || 'ZMW';
+        
+        // Sort tasks by task line
+        tasks.sort((a, b) => (a.taskLine || 0) - (b.taskLine || 0));
+        
+        for (const task of tasks) {
+            // Calculate costs for main task
+            const [mainMaterialCost, mainManHours] = await Promise.all([
+                getMaterialCostForTask(task.taskId),
+                getManHoursCostForTask(task.taskId)
+            ]);
+            const mainTotalCost = mainMaterialCost + mainManHours;
+            
+            // Create row for main task
             const tr = document.createElement('tr');
+            tr.classList.add('main-task-row');
             tr.innerHTML = `
                 <td>${projectNameCache[task.projectId] || task.projectId || ''}</td>
                 <td>${task.taskId || ''}</td>
-                <td class="editable" data-field="taskLine" data-taskid="${task.id}">${task.taskLine || ''}</td>
-                <td>${task.taskDescription || ''}</td>
-                <td class="editable" data-field="assignedTo" data-taskid="${task.id}">${task.assignedTo || ''}</td>
-                <td class="editable" data-field="location" data-taskid="${task.id}">${task.location || ''}</td>
-                <td class="editable" data-field="status" data-taskid="${task.id}">
-                    <span class="${getStatusBadge(task.status)}">${task.status || ''}</span>
+                <td>${task.taskLine || ''}</td>
+                <td>
+                    <span class="main-task-expand" data-id="${task.id}" style="font-size:17px">
+                        <i class="fas fa-${task.expanded ? "caret-down" : "caret-right"}"></i>
+                    </span>
+                    ${task.taskDescription || ''}
                 </td>
-                <td class="editable" data-field="startDate" data-taskid="${task.id}">${formatDate(task.startDate) || ''}</td>
-                <td class="editable" data-field="endDate" data-taskid="${task.id}">${formatDate(task.endDate) || ''}</td>
-                <td class="editable" data-field="duration" data-taskid="${task.id}">${task.duration || ''}</td>
-                <td class="material-cost-cell" data-taskcode="${task.taskId}"><span style="opacity:0.7">Auto</span></td>
-                <td class="man-cost-cell" data-taskid="${task.id}" data-taskcode="${task.taskId}"><span style="opacity:0.7">Auto</span></td>
-                <td class="total-cost-cell" data-taskid="${task.id}" data-taskcode="${task.taskId}"><span style="opacity:0.7">Auto</span></td>
+                <td>${task.assignedTo || ''}</td>
+                <td>${task.location || ''}</td>
+                <td><span class="${getStatusBadge(task.status)}">${task.status || ''}</span></td>
+                <td>${formatDate(task.startDate) || ''}</td>
+                <td>${formatDate(task.endDate) || ''}</td>
+                <td>${task.duration || ''}</td>
+                <td><span class="cost-badge">${formatCurrency(mainMaterialCost)}</span></td>
+                <td><span class="cost-badge">${formatCurrency(mainManHours)}</span></td>
+                <td><span class="cost-badge">${formatCurrency(mainTotalCost)}</span></td>
             `;
             taskList.appendChild(tr);
 
-            let matExpCost = 0, manCost = 0;
-            const unsubMatExp = subscribeMatExpCostForTask(task.taskId, (_matExpCost) => {
-                matExpCost = _matExpCost;
-                const matCostCell = tr.querySelector('.material-cost-cell');
-                if (matCostCell) {
-                    matCostCell.innerHTML = `<span class="cost-badge">${formatCurrency(matExpCost, currency)}</span>`;
-                }
-                const totalCostCell = tr.querySelector('.total-cost-cell');
-                if (totalCostCell) {
-                    totalCostCell.innerHTML = `<span class="cost-badge">${formatCurrency(matExpCost + manCost, currency)}</span>`;
-                }
-            }, currency);
-            matExpCostUnsubscribers.push(unsubMatExp);
+            // Add expand/collapse handler
+            const expandBtn = tr.querySelector('.main-task-expand');
+            expandBtn.onclick = async () => {
+                task.expanded = !task.expanded;
+                expandedTasks[task.id] = task.expanded;
+                localStorage.setItem("expanded_tasks", JSON.stringify(expandedTasks));
+                renderTasks(tasks);
+            };
 
-            const unsubMan = subscribeManCostForTask(task.taskId, (_manCost) => {
-                manCost = _manCost;
-                const manCostCell = tr.querySelector('.man-cost-cell');
-                if (manCostCell) {
-                    manCostCell.innerHTML = `<span class="cost-badge">${formatCurrency(manCost, currency)}</span>`;
-                }
-                const totalCostCell = tr.querySelector('.total-cost-cell');
-                if (totalCostCell) {
-                    totalCostCell.innerHTML = `<span class="cost-badge">${formatCurrency(matExpCost + manCost, currency)}</span>`;
-                }
-            });
-            manCostUnsubscribers.push(unsubMan);
-        });
-        document.querySelectorAll('.editable').forEach(cell => {
-            cell.addEventListener('click', function() {
-                const taskId = this.dataset.taskid;
-                const fieldName = this.dataset.field;
-                let currentValue = this.textContent.trim();
-                if (fieldName === 'status') {
-                    const span = this.querySelector('span');
-                    currentValue = span ? span.textContent.trim() : currentValue;
-                    makeEditable(this, currentValue, fieldName, taskId, true, ['COMPLETED', 'ONGOING', 'PENDING']);
-                } else if (fieldName === 'startDate' || fieldName === 'endDate') {
-                    const taskRef = doc(db, "projectTasks", taskId);
-                    getDoc(taskRef).then(doc => {
-                        const dateValue = doc.exists() ? formatDateForInput(doc.data()[fieldName]) : '';
-                        makeEditable(this, dateValue, fieldName, taskId);
-                    });
-                } else if (['materialCost'].includes(fieldName)) {
-                    const taskRef = doc(db, "projectTasks", taskId);
-                    getDoc(taskRef).then(doc => {
-                        if (doc.exists()) {
-                            const taskData = doc.data();
-                            const val = taskData[fieldName] || '';
-                            makeEditable(this, val, fieldName, taskId);
-                        }
-                    });
+            // Add subtasks if expanded
+            if (task.expanded) {
+                const subTasks = await getSubTasks(task.id);
+                
+                if (subTasks.length === 0) {
+                    const trSub = document.createElement('tr');
+                    trSub.classList.add('subtask-row');
+                    trSub.innerHTML = `<td colspan="13" style="padding-left: 40px;">No sub tasks yet.</td>`;
+                    taskList.appendChild(trSub);
                 } else {
-                    makeEditable(this, currentValue, fieldName, taskId);
+                    for (const subTask of subTasks) {
+                        // Calculate costs for subtask
+                        const [subMaterialCost, subManHours] = await Promise.all([
+                            getMaterialCostForTask(subTask.taskId),
+                            getManHoursCostForTask(subTask.taskId)
+                        ]);
+                        const subTotalCost = subMaterialCost + subManHours;
+                        
+                        // Create row for subtask
+                        const trSub = document.createElement('tr');
+                        trSub.classList.add('subtask-row');
+                        trSub.innerHTML = `
+                            <td></td>
+                            <td>${subTask.taskId || ''}</td>
+                            <td></td>
+                            <td class="subtask-desc">↪ ${subTask.taskDescription || ''}</td>
+                            <td>${subTask.assignedTo || ''}</td>
+                            <td>${subTask.location || ''}</td>
+                            <td><span class="${getStatusBadge(subTask.status)}">${subTask.status || ''}</span></td>
+                            <td>${formatDate(subTask.startDate) || ''}</td>
+                            <td>${formatDate(subTask.endDate) || ''}</td>
+                            <td>${subTask.duration || ''}</td>
+                            <td><span class="cost-badge">${formatCurrency(subMaterialCost)}</span></td>
+                            <td><span class="cost-badge">${formatCurrency(subManHours)}</span></td>
+                            <td><span class="cost-badge">${formatCurrency(subTotalCost)}</span></td>
+                        `;
+                        taskList.appendChild(trSub);
+
+                        // Add sub-subtasks
+                        const subSubTasks = await getSubSubTasks(task.id, subTask.id);
+                        for (const subSubTask of subSubTasks) {
+                            // Calculate costs for sub-subtask
+                            const [subSubMaterialCost, subSubManHours] = await Promise.all([
+                                getMaterialCostForTask(subSubTask.taskId),
+                                getManHoursCostForTask(subSubTask.taskId)
+                            ]);
+                            const subSubTotalCost = subSubMaterialCost + subSubManHours;
+                            
+                            // Create row for sub-subtask
+                            const trSubSub = document.createElement('tr');
+                            trSubSub.classList.add('subsubtask-row');
+                            trSubSub.innerHTML = `
+                                <td></td>
+                                <td>${subSubTask.taskId || ''}</td>
+                                <td></td>
+                                <td class="subtask-desc">↪↪ ${subSubTask.taskDescription || ''}</td>
+                                <td>${subSubTask.assignedTo || ''}</td>
+                                <td>${subSubTask.location || ''}</td>
+                                <td><span class="${getStatusBadge(subSubTask.status)}">${subSubTask.status || ''}</span></td>
+                                <td>${formatDate(subSubTask.startDate) || ''}</td>
+                                <td>${formatDate(subSubTask.endDate) || ''}</td>
+                                <td>${subSubTask.duration || ''}</td>
+                                <td><span class="cost-badge">${formatCurrency(subSubMaterialCost)}</span></td>
+                                <td><span class="cost-badge">${formatCurrency(subSubManHours)}</span></td>
+                                <td><span class="cost-badge">${formatCurrency(subSubTotalCost)}</span></td>
+                            `;
+                            taskList.appendChild(trSubSub);
+                        }
+                    }
                 }
-            });
-        });
+            }
+        }
     }
 
     function handleFiltersChange() {
@@ -550,14 +491,23 @@
         );
     }
 
+    // Load expanded tasks from localStorage
+    function loadExpandedTasks() {
+        try {
+            expandedTasks = JSON.parse(localStorage.getItem("expanded_tasks") || "{}");
+        } catch (e) { expandedTasks = {}; }
+    }
+
     searchInput.addEventListener('input', handleFiltersChange);
     projectFilter.addEventListener('change', handleFiltersChange);
     statusFilter.addEventListener('change', handleFiltersChange);
     monthFilter.addEventListener('change', handleFiltersChange);
     yearFilter.addEventListener('change', handleFiltersChange);
 
-    await loadProjectsForFilter();
+    // Initialize
+    loadProjectsForFilter();
     loadFiltersFromStorage();
+    loadExpandedTasks();
     loadAllTasks(
         searchInput.value.trim(),
         projectFilter.value,
