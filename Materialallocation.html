@@ -5,67 +5,214 @@
   <title>IMS | Material Usage History</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <style>
-    body { font-family: 'Open Sans', Arial, sans-serif; background: #f4f7fa; margin: 0; }
-    .panel { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(44,62,80,0.04); margin: 40px auto; padding: 30px;}
-    .panel-heading { background: #666363; color: #fff; padding: 18px 24px; font-size: 1.16rem; font-weight: bold; border-radius: 8px 8px 0 0; margin: -30px -30px 24px -30px; }
-    .filter-bar {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 18px;
-      gap: 10px 18px;
-    }
-    .filter-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .filter-label { font-weight: bold; margin-right: 8px; }
-    .filter-select, .filter-input { padding: 7px 12px; font-size: 15px; border-radius: 4px; border: 1px solid #bbb; }
-    .total-container {
-      font-weight: bold;
-      font-size: 1.08rem;
-      color: #1565c0;
-      margin-left: auto;
-      white-space: nowrap;
-    }
-    .table-responsive { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; background: #fff; }
-    th, td { padding: 14px 12px; text-align: left; font-size: 15px; }
-    th { font-weight: 700; }
-    tr:nth-child(even) { background: #f7fafc; }
-    tr:hover { background: #eafaf1; }
-    .edit-btn { padding: 5px 14px; background: #1976d2; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
-    .edit-btn:hover { background: #0d47a1; }
-    .reverse-btn { padding: 5px 14px; background: #b71c1c; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
-    .reverse-btn[disabled] { background: #ccc; color: #888; cursor: not-allowed; }
-    .reverse-btn:hover:not([disabled]) { background: #d32f2f; }
-    .modal {
-      display: none; position: fixed; z-index: 99;
-      left: 0; top: 0; width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.3); align-items: center; justify-content: center;
-    }
-    .modal.active { display: flex; }
-    .modal-content {
-      background: #fff; border-radius: 7px; padding: 28px 28px 18px 28px; min-width: 300px; box-shadow: 0 2px 14px rgba(0,0,0,0.10);
-      position: relative;
-    }
-    .modal-content label { font-weight: bold; display: block; margin-bottom: 8px; }
-    .modal-content input[type="datetime-local"] { width: 100%; padding: 7px 10px; font-size: 16px; margin-bottom: 14px; border: 1px solid #bbb; border-radius: 4px; }
-    .modal-actions { text-align: right; display: flex; align-items: center; gap: 10px; }
-    .modal-actions button { margin-left: 8px; padding: 6px 18px; border: none; border-radius: 4px; font-size: 15px; }
-    .modal-actions .save-btn { background: #1976d2; color: #fff; }
-    .modal-actions .cancel-btn { background: #ccc; color: #222; }
-    .modal-actions .reverse-btn { background: #b71c1c; color: #fff; margin-left: auto; }
-    .modal-actions .save-btn:hover { background: #125195; }
-    .modal-actions .cancel-btn:hover { background: #888; }
-    .modal-actions .reverse-btn:hover:not([disabled]) { background: #d32f2f; }
-    .modal-actions .reverse-btn[disabled] { background: #ccc; color: #888; cursor: not-allowed; }
-    .modal-close { position: absolute; right: 10px; top: 10px; background: none; border: none; font-size: 22px; cursor: pointer; color: #888; }
-    .modal-close:hover { color: #222; }
-    #edit-modal-error { color: #c00; font-size: 0.97rem; margin-bottom: 7px; }
+   body {
+  font-family: 'Open Sans', Arial, sans-serif;
+  background: #181a22;
+  margin: 0;
+  color: #e0e0e0;
+}
+.panel {
+  background: #1f222c;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  margin: 30px auto;
+  padding: 20px;
+}
+.panel-heading {
+  background: #2c3e50;
+  color: #fff;
+  padding: 12px 18px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px 8px 0 0;
+  margin: -20px -20px 16px -20px;
+}
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  gap: 8px 14px;
+}
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.filter-label {
+  font-weight: 600;
+  margin-right: 6px;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+.filter-select, .filter-input {
+  padding: 5px 10px;
+  font-size: 13px;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background: #2c3e50;
+  color: #e0e0e0;
+}
+.total-container {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #3498db;
+  margin-left: auto;
+  white-space: nowrap;
+}
+.table-responsive {
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #1f222c;
+}
+th, td {
+  padding: 10px 8px;
+  text-align: left;
+  font-size: 13px;
+  color: #e0e0e0;
+}
+th {
+  font-weight: 700;
+  background: #2c3e50;
+}
+tr:nth-child(even) {
+  background: #22252f;
+}
+tr:hover {
+  background: #34495e;
+}
+.edit-btn {
+  padding: 4px 12px;
+  background: #2980b9;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.edit-btn:hover {
+  background: #1a4f7a;
+}
+.reverse-btn {
+  padding: 4px 12px;
+  background: #c0392b;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.reverse-btn[disabled] {
+  background: #555;
+  color: #888;
+  cursor: not-allowed;
+}
+.reverse-btn:hover:not([disabled]) {
+  background: #e74c3c;
+}
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 99;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  align-items: center;
+  justify-content: center;
+}
+.modal.active {
+  display: flex;
+}
+.modal-content {
+  background: #1f222c;
+  border-radius: 7px;
+  padding: 20px 20px 14px 20px;
+  min-width: 280px;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.6);
+  position: relative;
+  color: #e0e0e0;
+}
+.modal-content label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+}
+.modal-content input[type="datetime-local"] {
+  width: 100%;
+  padding: 6px 10px;
+  font-size: 14px;
+  margin-bottom: 12px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background: #2c3e50;
+  color: #e0e0e0;
+}
+.modal-actions {
+  text-align: right;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.modal-actions button {
+  margin-left: 6px;
+  padding: 5px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+}
+.modal-actions .save-btn {
+  background: #2980b9;
+  color: #fff;
+}
+.modal-actions .cancel-btn {
+  background: #555;
+  color: #ccc;
+}
+.modal-actions .reverse-btn {
+  background: #c0392b;
+  color: #fff;
+  margin-left: auto;
+}
+.modal-actions .save-btn:hover {
+  background: #1a4f7a;
+}
+.modal-actions .cancel-btn:hover {
+  background: #777;
+}
+.modal-actions .reverse-btn:hover:not([disabled]) {
+  background: #e74c3c;
+}
+.modal-actions .reverse-btn[disabled] {
+  background: #555;
+  color: #888;
+  cursor: not-allowed;
+}
+.modal-close {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #888;
+}
+.modal-close:hover {
+  color: #eee;
+}
+#edit-modal-error {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+}
+
   </style>
 </head>
 <body>
