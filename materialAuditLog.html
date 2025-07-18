@@ -6,27 +6,122 @@
   <title>IMS | Material Audit Log</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <style>
-    body { font-family: 'Open Sans', Arial, sans-serif; background: #f4f7fa; margin: 0; }
-    .panel { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(44,62,80,0.04); margin: 40px auto; max-width: 1200px; padding: 30px; }
-    .panel-heading { background: #666363; color: #fff; padding: 18px 24px; font-size: 1.16rem; font-weight: bold; border-radius: 8px 8px 0 0; margin: -30px -30px 24px -30px; }
-    .filter-group { margin-bottom: 18px; }
-    .filter-label { font-weight: bold; margin-right: 8px; }
-    .filter-input, .filter-select { padding: 7px 12px; font-size: 15px; border-radius: 4px; border: 1px solid #bbb; }
-    .table-responsive { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; background: #fff; }
-    th, td { padding: 14px 12px; text-align: left; font-size: 15px; }
-    th { font-weight: 700; }
-    tr:nth-child(even) { background: #f7fafc; }
-    tr:hover { background: #eafaf1; }
-    .success { color: #16a085; font-weight: bold; }
-    .danger { color: #e74c3c; font-weight: bold; }
-    .info { color: #2980b9; font-weight: bold; }
-    .action-badge { border-radius: 3px; padding: 2px 8px; font-size: 14px; margin-right: 6px; }
-    .action-badge.add { background: #eafaf1; color: #16a085; border: 1px solid #b9f6ca; }
-    .action-badge.restock { background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; }
-    .action-badge.edit { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
-    .current-stock { font-weight: bold; color: #1abc9c; }
-    .back-link { margin-bottom: 18px; display: inline-block; color: #2980b9; text-decoration: underline; font-weight: 600; cursor: pointer; }
+  body {
+  font-family: 'Open Sans', Arial, sans-serif;
+  background: #181a22;
+  margin: 0;
+  color: #e0e0e0;
+}
+.panel {
+  background: #2c3e50;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+  margin: 40px auto;
+  max-width: 1200px;
+  padding: 30px;
+  color: #e0e0e0;
+}
+.panel-heading {
+  background: #666363;
+  color: #fff;
+  padding: 18px 24px;
+  font-size: 1.16rem;
+  font-weight: bold;
+  border-radius: 8px 8px 0 0;
+  margin: -30px -30px 24px -30px;
+}
+.filter-group {
+  margin-bottom: 18px;
+}
+.filter-label {
+  font-weight: bold;
+  margin-right: 8px;
+  color: #e0e0e0;
+}
+.filter-input,
+.filter-select {
+  padding: 7px 12px;
+  font-size: 15px;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background: #222831;
+  color: #e0e0e0;
+}
+.table-responsive {
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #2c3e50;
+  color: #e0e0e0;
+}
+th,
+td {
+  padding: 14px 12px;
+  text-align: left;
+  font-size: 15px;
+  background: inherit;
+}
+th {
+  font-weight: 700;
+  background: #666363;
+  color: #fff;
+}
+tr:nth-child(even) {
+  background: #243447;
+}
+tr:hover {
+  background: #1abc9c;
+  color: #fff;
+}
+.success {
+  color: #16a085;
+  font-weight: bold;
+}
+.danger {
+  color: #e74c3c;
+  font-weight: bold;
+}
+.info {
+  color: #2980b9;
+  font-weight: bold;
+}
+.action-badge {
+  border-radius: 3px;
+  padding: 2px 8px;
+  font-size: 14px;
+  margin-right: 6px;
+  font-weight: 600;
+}
+.action-badge.add {
+  background: #0f3d2e;
+  color: #16a085;
+  border: 1px solid #0d6b4a;
+}
+.action-badge.restock {
+  background: #0b2a4b;
+  color: #1565c0;
+  border: 1px solid #2a65cc;
+}
+.action-badge.edit {
+  background: #402a0b;
+  color: #e65100;
+  border: 1px solid #d17a1b;
+}
+.current-stock {
+  font-weight: bold;
+  color: #1abc9c;
+}
+.back-link {
+  margin-bottom: 18px;
+  display: inline-block;
+  color: #2980b9;
+  text-decoration: underline;
+  font-weight: 600;
+  cursor: pointer;
+}
+
   </style>
 </head>
 <body>
