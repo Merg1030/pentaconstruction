@@ -7,38 +7,81 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
+            /* Color Palette */
             --primary: #4361ee;
-            --primary-hover: #3a56d4;
+            --primary-light: #4cc9f0;
+            --primary-dark: #3a0ca3;
             --success: #4cc9f0;
             --danger: #f72585;
             --warning: #f8961e;
             --info: #4895ef;
-            --dark: #212529;
-            --light: #f8f9fa;
-            --gray: #6c757d;
-            --border-radius: 8px;
-            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+            --gray-800: #343a40;
+            --gray-900: #212529;
+            
+            /* Spacing */
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            
+            /* Typography */
+            --font-size-sm: 12px;
+            --font-size-md: 14px;
+            --font-size-lg: 16px;
+            --font-size-xl: 20px;
+            --font-size-xxl: 24px;
+            
+            /* Border */
+            --border-radius-sm: 4px;
+            --border-radius-md: 8px;
+            --border-radius-lg: 12px;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            
+            /* Transitions */
+            --transition-fast: 0.15s ease;
+            --transition-medium: 0.3s ease;
+            --transition-slow: 0.5s ease;
         }
 
+        /* Dark Mode Colors */
         .dark-mode {
-            --bg-color: #1a1a1a;
-            --card-bg: #2d2d2d;
-            --text-color: #e0e0e0;
-            --border-color: #444;
-            --input-bg: #333;
-            --input-border: #555;
+            --bg-color: #121212;
+            --surface-color: #1e1e1e;
+            --surface-hover: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255,255,255,0.7);
+            --text-disabled: rgba(255,255,255,0.5);
+            --divider-color: rgba(255,255,255,0.12);
+            --input-bg: #2d2d2d;
+            --input-border: #444;
         }
 
+        /* Light Mode Colors */
         .light-mode {
-            --bg-color: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-color: #212529;
-            --border-color: #dee2e6;
+            --bg-color: #f5f7fa;
+            --surface-color: #ffffff;
+            --surface-hover: #f8f9fa;
+            --text-primary: #212529;
+            --text-secondary: #495057;
+            --text-disabled: #adb5bd;
+            --divider-color: #e9ecef;
             --input-bg: #ffffff;
             --input-border: #ced4da;
         }
 
+        /* Base Styles */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -46,57 +89,64 @@
         }
 
         body {
-            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            font-family: 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text-primary);
             line-height: 1.6;
-            transition: var(--transition);
-            padding: 20px;
+            transition: background-color var(--transition-medium), color var(--transition-medium);
+            padding: 0;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
+            padding: var(--space-md);
         }
 
+        /* Header Styles */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 15px;
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-md);
+            border-bottom: 1px solid var(--divider-color);
         }
 
         .page-title {
-            font-size: 28px;
+            font-size: var(--font-size-xxl);
             font-weight: 600;
             color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
         }
 
         .controls {
             display: flex;
-            gap: 15px;
+            gap: var(--space-sm);
             align-items: center;
-            flex-wrap: wrap;
         }
 
+        /* Button Styles */
         .btn {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            border-radius: var(--border-radius);
+            justify-content: center;
+            gap: var(--space-xs);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--border-radius-md);
             font-weight: 500;
+            font-size: var(--font-size-md);
             cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
+            transition: all var(--transition-fast);
             border: none;
-            font-size: 14px;
+            text-decoration: none;
+            white-space: nowrap;
         }
 
         .btn i {
-            font-size: 14px;
+            font-size: var(--font-size-md);
         }
 
         .btn-primary {
@@ -105,48 +155,36 @@
         }
 
         .btn-primary:hover {
-            background-color: var(--primary-hover);
+            background-color: var(--primary-dark);
             transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
         }
 
         .btn-outline {
             background-color: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
+            border: 1px solid var(--divider-color);
+            color: var(--text-primary);
         }
 
         .btn-outline:hover {
-            background-color: var(--card-bg);
+            background-color: var(--surface-hover);
         }
 
-        .btn-success {
-            background-color: var(--success);
-            color: white;
+        .btn-icon {
+            padding: var(--space-sm);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
         }
 
-        .btn-danger {
-            background-color: var(--danger);
-            color: white;
-        }
-
-        .btn-warning {
-            background-color: var(--warning);
-            color: white;
-        }
-
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 13px;
-        }
-
+        /* Form Styles */
         .form-container {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: var(--border-radius);
-            margin-bottom: 30px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--box-shadow);
-            transition: var(--transition);
+            background: var(--surface-color);
+            padding: var(--space-lg);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--space-xl);
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-medium);
             max-height: 0;
             overflow: hidden;
             opacity: 0;
@@ -155,37 +193,37 @@
         .form-container.visible {
             max-height: 1000px;
             opacity: 1;
-            padding: 25px;
-            margin-bottom: 30px;
+            margin-bottom: var(--space-xl);
         }
 
         .form-title {
-            font-size: 20px;
-            margin-bottom: 20px;
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--space-lg);
             color: var(--primary);
             font-weight: 600;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: var(--space-md);
         }
 
         .form-label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: 14px;
+            margin-bottom: var(--space-xs);
+            font-weight: 500;
+            font-size: var(--font-size-md);
+            color: var(--text-primary);
         }
 
         .form-control {
             width: 100%;
-            padding: 12px 15px;
+            padding: var(--space-sm) var(--space-md);
             background-color: var(--input-bg);
             border: 1px solid var(--input-border);
-            border-radius: var(--border-radius);
-            color: var(--text-color);
-            transition: var(--transition);
-            font-size: 14px;
+            border-radius: var(--border-radius-md);
+            color: var(--text-primary);
+            transition: all var(--transition-fast);
+            font-size: var(--font-size-md);
         }
 
         .form-control:focus {
@@ -202,201 +240,195 @@
         .form-actions {
             display: flex;
             justify-content: flex-end;
-            gap: 10px;
-            margin-top: 20px;
+            gap: var(--space-sm);
+            margin-top: var(--space-lg);
         }
 
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
+        /* Dashboard Layout */
+        .dashboard-layout {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
         }
 
-        .project-card {
-            background-color: var(--card-bg);
-            padding: 20px;
-            border-radius: var(--border-radius);
-            border: 1px solid var(--border-color);
-            box-shadow: var(--box-shadow);
-            transition: var(--transition);
-            position: relative;
-            cursor: pointer;
+        /* Project Table Styles */
+        .projects-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--surface-color);
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
         }
 
-        .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        .projects-table thead {
+            background-color: var(--primary);
+            color: white;
         }
 
-        .project-card.completed {
-            border-left: 4px solid var(--success);
-            opacity: 0.9;
+        .projects-table th {
+            padding: var(--space-md);
+            text-align: left;
+            font-weight: 500;
+            font-size: var(--font-size-md);
         }
 
-        .project-card.hidden {
-            display: none;
+        .projects-table td {
+            padding: var(--space-md);
+            border-bottom: 1px solid var(--divider-color);
+            vertical-align: middle;
         }
 
-        .project-card.completed .project-title::after {
-            content: " (Completed)";
-            color: var(--success);
-            font-size: 0.8em;
+        .projects-table tr:last-child td {
+            border-bottom: none;
         }
 
-        .project-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 10px;
+        .projects-table tr:hover {
+            background-color: var(--surface-hover);
+        }
+
+        .project-name {
+            font-weight: 500;
             color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .project-name i {
+            color: var(--text-secondary);
+            font-size: var(--font-size-lg);
         }
 
         .project-client {
-            font-weight: 500;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            color: var(--text-secondary);
+            font-size: var(--font-size-md);
         }
 
-        .project-client i {
-            color: var(--gray);
+        .project-status {
+            display: inline-block;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            text-transform: uppercase;
         }
 
-        .project-goal {
-            margin-bottom: 15px;
-            color: var(--text-color);
-            opacity: 0.9;
-            font-size: 14px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+        .status-active {
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
         }
 
-        .project-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 15px;
-            font-size: 13px;
+        .status-completed {
+            background-color: rgba(76, 201, 240, 0.1);
+            color: var(--success);
         }
 
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .meta-label {
-            color: var(--gray);
+        .status-hidden {
+            background-color: rgba(248, 150, 30, 0.1);
+            color: var(--warning);
         }
 
         .progress-container {
-            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
         }
 
         .progress-bar {
+            flex-grow: 1;
             height: 6px;
             background-color: var(--input-bg);
             border-radius: 3px;
             overflow: hidden;
-            margin-bottom: 8px;
         }
 
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--primary), var(--success));
             width: 0%;
-            transition: width 0.5s ease;
+            transition: width var(--transition-slow);
         }
 
         .progress-text {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: var(--gray);
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            min-width: 40px;
+            text-align: right;
         }
 
-        .card-actions {
+        .table-actions {
             display: flex;
+            gap: var(--space-xs);
             justify-content: flex-end;
-            gap: 8px;
-            margin-top: 15px;
         }
 
-        .status-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background-color: var(--success);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .hidden-badge {
-            background-color: var(--warning);
-        }
-
+        /* Empty State */
         .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-xl);
             text-align: center;
-            padding: 40px 20px;
-            grid-column: 1 / -1;
+            background-color: var(--surface-color);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-md);
         }
 
         .empty-state-icon {
             font-size: 48px;
-            color: var(--gray);
-            opacity: 0.5;
-            margin-bottom: 15px;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-md);
         }
 
         .empty-state-text {
-            color: var(--text-color);
-            opacity: 0.7;
-            margin-bottom: 20px;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-md);
+            max-width: 400px;
         }
 
+        /* Filter Controls */
         .filter-controls {
             display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+            align-items: center;
             flex-wrap: wrap;
         }
 
         .filter-group {
             display: flex;
             align-items: center;
-            gap: 8px;
-            background-color: var(--card-bg);
-            padding: 8px 12px;
-            border-radius: var(--border-radius);
-            border: 1px solid var(--border-color);
+            gap: var(--space-sm);
         }
 
         .filter-label {
-            font-size: 14px;
-            font-weight: 500;
+            font-size: var(--font-size-md);
+            color: var(--text-secondary);
         }
 
         .filter-select {
             background-color: var(--input-bg);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            padding: 6px 10px;
-            font-size: 14px;
+            color: var(--text-primary);
+            border: 1px solid var(--input-border);
+            border-radius: var(--border-radius-md);
+            padding: var(--space-xs) var(--space-sm);
+            font-size: var(--font-size-md);
+            transition: all var(--transition-fast);
         }
 
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Responsive Styles */
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
                 align-items: flex-start;
+                gap: var(--space-md);
             }
             
             .controls {
@@ -404,31 +436,40 @@
                 justify-content: space-between;
             }
             
-            .dashboard-grid {
-                grid-template-columns: 1fr;
+            .projects-table {
+                display: block;
+                overflow-x: auto;
             }
-
+            
             .filter-controls {
                 flex-direction: column;
-                gap: 10px;
+                align-items: flex-start;
+                gap: var(--space-sm);
             }
         }
 
-        /* Utility classes */
+        /* Utility Classes */
+        .text-truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        .text-muted {
+            color: var(--text-secondary);
+        }
+
         .text-success {
             color: var(--success);
         }
+
         .text-warning {
             color: var(--warning);
         }
+
         .text-danger {
             color: var(--danger);
-        }
-        .text-primary {
-            color: var(--primary);
-        }
-        .text-muted {
-            color: var(--gray);
         }
     </style>
 </head>
@@ -499,11 +540,27 @@
             </button>
         </div>
         
-        <div class="dashboard-grid" id="projectDashboard">
-            <div class="loading empty-state">
-                <i class="fas fa-spinner fa-spin empty-state-icon"></i>
-                <p class="empty-state-text">Loading projects...</p>
-            </div>
+        <div class="dashboard-layout">
+            <table class="projects-table" id="projectsTable">
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>Client</th>
+                        <th>Status</th>
+                        <th>Progress</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="projectsTableBody">
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <i class="fas fa-spinner fa-spin empty-state-icon"></i>
+                            <p class="empty-state-text">Loading projects...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -531,7 +588,7 @@
         const toggleModeBtn = document.getElementById('toggleModeBtn');
         const formContainer = document.getElementById('formContainer');
         const projectForm = document.getElementById('projectForm');
-        const dashboard = document.getElementById('projectDashboard');
+        const projectsTableBody = document.getElementById('projectsTableBody');
         const body = document.body;
         const statusFilter = document.getElementById('statusFilter');
         const sortFilter = document.getElementById('sortFilter');
@@ -569,8 +626,8 @@
         toggleHiddenBtn.addEventListener('click', function() {
             showHiddenProjects = !showHiddenProjects;
             this.innerHTML = showHiddenProjects 
-                ? '<i class="fas fa-eye-slash"></i> Hide Hidden Projects' 
-                : '<i class="fas fa-eye"></i> Show Hidden Projects';
+                ? '<i class="fas fa-eye-slash"></i> Hide Hidden' 
+                : '<i class="fas fa-eye"></i> Show Hidden';
             renderProjects();
         });
 
@@ -638,55 +695,69 @@
             return Math.round((completedTasks / project.tasks.length) * 100);
         }
 
-        // Create project card
-        function createProjectCard(id, project) {
+        // Create project row
+        function createProjectRow(id, project) {
             const isCompleted = project.status === 'completed';
+            const isHidden = project.hidden;
             const progress = calculateProgress(project);
             
-            const card = document.createElement('div');
-            card.className = `project-card ${isCompleted ? 'completed' : ''}`;
-            card.dataset.id = id;
+            const row = document.createElement('tr');
+            row.dataset.id = id;
             
-            if (project.hidden && !showHiddenProjects) {
-                card.classList.add('hidden');
+            if (isHidden && !showHiddenProjects) {
+                row.style.display = 'none';
             }
             
-            card.innerHTML = `
-                ${isCompleted ? '<span class="status-badge">Completed</span>' : ''}
-                ${project.hidden ? '<span class="status-badge hidden-badge">Hidden</span>' : ''}
-                <h3 class="project-title">${project.name}</h3>
-                <p class="project-client">
-                    <i class="fas fa-building"></i> ${project.client || 'No client specified'}
-                </p>
-                <p class="project-goal">${project.goal || 'No project goal defined'}</p>
-                
-                <div class="progress-container">
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${progress}%"></div>
+            row.innerHTML = `
+                <td>
+                    <div class="project-name">
+                        <i class="fas fa-project-diagram"></i>
+                        <span class="text-truncate">${project.name}</span>
                     </div>
-                    <div class="progress-text">
-                        <span>Project Progress</span>
-                        <span>${progress}%</span>
+                </td>
+                <td>
+                    <div class="project-client text-truncate">
+                        ${project.client || 'No client'}
                     </div>
-                </div>
-                
-                <div class="card-actions">
-                    ${!isCompleted ? `
-                        <button class="btn btn-success btn-sm complete-btn">
-                            <i class="fas fa-check"></i> Complete
+                </td>
+                <td>
+                    ${isCompleted 
+                        ? '<span class="project-status status-completed">Completed</span>' 
+                        : isHidden 
+                            ? '<span class="project-status status-hidden">Hidden</span>'
+                            : '<span class="project-status status-active">Active</span>'
+                    }
+                </td>
+                <td>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                        <span class="progress-text">${progress}%</span>
+                    </div>
+                </td>
+                <td>
+                    <span class="text-muted">${formatDate(project.createdAt)}</span>
+                </td>
+                <td>
+                    <div class="table-actions">
+                        ${!isCompleted ? `
+                            <button class="btn btn-icon btn-outline complete-btn" title="Complete Project">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        ` : ''}
+                        <button class="btn btn-icon btn-outline toggle-hidden-btn" title="${isHidden ? 'Show Project' : 'Hide Project'}">
+                            <i class="fas ${isHidden ? 'fa-eye' : 'fa-eye-slash'}"></i>
                         </button>
-                    ` : ''}
-                    <button class="btn ${project.hidden ? 'btn-primary' : 'btn-outline'} btn-sm toggle-hidden-btn">
-                        <i class="fas ${project.hidden ? 'fa-eye' : 'fa-eye-slash'}"></i> ${project.hidden ? 'Show' : 'Hide'}
-                    </button>
-                    <button class="btn btn-danger btn-sm delete-btn">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
-                </div>
+                        <button class="btn btn-icon btn-outline delete-btn" title="Delete Project">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
             `;
             
-            // Add click handler for the card (excluding buttons)
-            card.addEventListener('click', (e) => {
+            // Add click handler for the row (excluding buttons)
+            row.addEventListener('click', (e) => {
                 if (!e.target.closest('button')) {
                     window.location.href = `Projectdetail.html?id=${id}`;
                 }
@@ -694,10 +765,10 @@
             
             // Complete project button
             if (!isCompleted) {
-                const completeBtn = card.querySelector('.complete-btn');
+                const completeBtn = row.querySelector('.complete-btn');
                 completeBtn.addEventListener('click', async (e) => {
                     e.stopPropagation();
-                    if (confirm('Are you sure you want to mark this project as completed?')) {
+                    if (confirm('Mark this project as completed?')) {
                         try {
                             await updateDoc(doc(db, "projectDashboard", id), {
                                 status: 'completed',
@@ -712,7 +783,7 @@
             }
             
             // Toggle hidden status button
-            const toggleHiddenBtn = card.querySelector('.toggle-hidden-btn');
+            const toggleHiddenBtn = row.querySelector('.toggle-hidden-btn');
             toggleHiddenBtn.addEventListener('click', async (e) => {
                 e.stopPropagation();
                 try {
@@ -726,10 +797,10 @@
             });
             
             // Delete project button
-            const deleteBtn = card.querySelector('.delete-btn');
+            const deleteBtn = row.querySelector('.delete-btn');
             deleteBtn.addEventListener('click', async (e) => {
                 e.stopPropagation();
-                if (confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
+                if (confirm('Are you sure you want to delete this project?')) {
                     try {
                         await deleteDoc(doc(db, "projectDashboard", id));
                     } catch (error) {
@@ -739,7 +810,7 @@
                 }
             });
             
-            return card;
+            return row;
         }
 
         // Filter and sort projects
@@ -772,19 +843,21 @@
             return filtered;
         }
 
-        // Render projects to the dashboard
+        // Render projects to the table
         function renderProjects() {
-            dashboard.innerHTML = '';
+            projectsTableBody.innerHTML = '';
             
             if (allProjects.length === 0) {
-                dashboard.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-folder-open empty-state-icon"></i>
-                        <p class="empty-state-text">No projects found. Create your first project!</p>
-                        <button class="btn btn-primary" id="emptyStateCreateBtn">
-                            <i class="fas fa-plus"></i> Create Project
-                        </button>
-                    </div>
+                projectsTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <i class="fas fa-folder-open empty-state-icon"></i>
+                            <p class="empty-state-text">No projects found. Create your first project!</p>
+                            <button class="btn btn-primary" id="emptyStateCreateBtn">
+                                <i class="fas fa-plus"></i> Create Project
+                            </button>
+                        </td>
+                    </tr>
                 `;
                 
                 document.getElementById('emptyStateCreateBtn').addEventListener('click', () => {
@@ -798,21 +871,23 @@
             const filteredProjects = filterAndSortProjects();
             
             if (filteredProjects.length === 0) {
-                dashboard.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-search empty-state-icon"></i>
-                        <p class="empty-state-text">No projects match your filters</p>
-                        <button class="btn btn-outline" onclick="document.getElementById('toggleHiddenBtn').click()">
-                            ${showHiddenProjects ? 'Hide' : 'Show'} Hidden Projects
-                        </button>
-                    </div>
+                projectsTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <i class="fas fa-search empty-state-icon"></i>
+                            <p class="empty-state-text">No projects match your filters</p>
+                            <button class="btn btn-outline" onclick="document.getElementById('toggleHiddenBtn').click()">
+                                ${showHiddenProjects ? 'Hide' : 'Show'} Hidden Projects
+                            </button>
+                        </td>
+                    </tr>
                 `;
                 return;
             }
             
             filteredProjects.forEach(project => {
-                const card = createProjectCard(project.id, project);
-                dashboard.appendChild(card);
+                const row = createProjectRow(project.id, project);
+                projectsTableBody.appendChild(row);
             });
         }
 
@@ -828,14 +903,16 @@
             renderProjects();
         }, (error) => {
             console.error("Error loading projects: ", error);
-            dashboard.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-exclamation-triangle empty-state-icon"></i>
-                    <p class="empty-state-text">Error loading projects. Please refresh the page.</p>
-                    <button class="btn btn-primary" onclick="window.location.reload()">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                </div>
+            projectsTableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="empty-state">
+                        <i class="fas fa-exclamation-triangle empty-state-icon"></i>
+                        <p class="empty-state-text">Error loading projects. Please refresh the page.</p>
+                        <button class="btn btn-primary" onclick="window.location.reload()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </td>
+                </tr>
             `;
         });
 
@@ -858,18 +935,6 @@
         document.addEventListener('keypress', resetInactivityTimeout);
         document.addEventListener('click', resetInactivityTimeout);
         document.addEventListener('touchstart', resetInactivityTimeout);
-
-        // Disable right-click context menu
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
-
-        // Disable specific keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            if ((e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'a' || e.key === 'c')) || e.key === 'F12') {
-                e.preventDefault();
-            }
-        });
     </script>
 </body>
 </html>
