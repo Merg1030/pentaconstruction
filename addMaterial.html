@@ -6,20 +6,98 @@
   <title>IMS | Add/Restock Material</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <style>
-    body { font-family: 'Open Sans', Arial, sans-serif; background: #f4f7fa; margin: 0; }
-    .panel { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(44,62,80,0.04); margin: 40px auto; max-width: 480px; padding: 30px; }
-    .panel-heading { background: #666363; color: #fff; padding: 18px 24px; font-size: 1.16rem; font-weight: bold; border-radius: 8px 8px 0 0; margin: -30px -30px 24px -30px; }
-    .form-group label { font-weight: 600; margin-bottom: 6px; }
-    .form-group input, .form-group select { border-radius: 5px; font-size: 1rem; padding: 8px 12px; border: 1px solid #ccc; width: 100%; background: #f7fafd; }
-    .btn-primary { background: #8c9391; border: none; color: #fff; border-radius: 4px; padding: 10px 18px; font-weight: 600; font-size: 15px; margin-right: 10px; }
-    .btn-primary:hover { background: #16a085; }
-    .success-msg { color: #1abc9c; font-weight: bold; margin-top: 16px; }
-    .error-msg { color: #e74c3c; font-weight: bold; margin-top: 16px; }
-    .audit-log-link { margin-top: 18px; display: block; color: #2980b9; text-decoration: underline; font-weight: 600; }
-    .toggle-btns { display: flex; gap: 10px; margin-bottom: 18px; }
-    .btn-toggle { background: #ecf0f1; color: #444; border: 1px solid #bbb; border-radius: 4px; padding: 8px 18px; font-weight: 600; cursor: pointer; }
-    .btn-toggle.active, .btn-toggle:focus { background: #1abc9c; color: #fff; border: 1.5px solid #1abc9c; }
-    #restock-fields { display: none; }
+   body {
+  font-family: 'Open Sans', Arial, sans-serif;
+  background: #181a22;
+  margin: 0;
+  color: #e0e0e0;
+}
+.panel {
+  background: #2c3e50;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.7);
+  margin: 40px auto;
+  max-width: 480px;
+  padding: 30px;
+}
+.panel-heading {
+  background: #666363;
+  color: #fff;
+  padding: 18px 24px;
+  font-size: 1.16rem;
+  font-weight: bold;
+  border-radius: 8px 8px 0 0;
+  margin: -30px -30px 24px -30px;
+}
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #e0e0e0;
+}
+.form-group input,
+.form-group select {
+  border-radius: 5px;
+  font-size: 1rem;
+  padding: 8px 12px;
+  border: 1px solid #444;
+  width: 100%;
+  background: #222831;
+  color: #e0e0e0;
+}
+.btn-primary {
+  background: #2980b9;
+  border: none;
+  color: #fff;
+  border-radius: 4px;
+  padding: 10px 18px;
+  font-weight: 600;
+  font-size: 15px;
+  margin-right: 10px;
+}
+.btn-primary:hover {
+  background: #1abc9c;
+}
+.success-msg {
+  color: #1abc9c;
+  font-weight: bold;
+  margin-top: 16px;
+}
+.error-msg {
+  color: #e74c3c;
+  font-weight: bold;
+  margin-top: 16px;
+}
+.audit-log-link {
+  margin-top: 18px;
+  display: block;
+  color: #2980b9;
+  text-decoration: underline;
+  font-weight: 600;
+}
+.toggle-btns {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.btn-toggle {
+  background: #34495e;
+  color: #ddd;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 8px 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-toggle.active,
+.btn-toggle:focus {
+  background: #1abc9c;
+  color: #fff;
+  border: 1.5px solid #1abc9c;
+}
+#restock-fields {
+  display: none;
+}
+
   </style>
 </head>
 <body>
