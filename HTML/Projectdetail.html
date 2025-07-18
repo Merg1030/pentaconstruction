@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Tasks | Task Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="CSS/Projecttask.css">
+</head>
+<body class="dark-mode">
+    <div class="container">
+        <div class="project-info-container">
+    <div class="project-header-card">
+       
+        <div class="project-details-grid">
+            <div class="detail-item">
+                <span class="detail-label">PROJECT MANAGER:</span>
+                <span class="detail-value">Christopher chishela</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">SUPERVISOR:</span>
+                <span class="detail-value">Orscar mushimbi</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">DEADLINE:</span>
+                <span class="detail-value deadline"></span>30 August 2025
+            </div>
+        </div>
+    </div>
+    </div>
+        <div class="header">
+            <div class="actions">
+                <button class="btn btn-primary action-btn" id="addTaskBtn">
+                    <i class="fas fa-plus"></i> Add Task
+                </button>
+                <button class="btn btn-outline" id="toggleModeBtn">
+                    <i class="fas fa-moon"></i> Light Mode
+                </button>
+            </div>
+        </div>
+        <div class="project-header" id="projectHeaderSticky">
+            <div class="project-title-sticky" id="projectNameHeader">Project Tasks</div>
+        </div>
+        <div class="filters-bar">
+            <div class="filter-group"><span class="filter-label">Status:</span>
+                <select id="statusFilter">
+                    <option value="">All</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="ONGOING">Ongoing</option>
+                    <option value="PENDING">Pending</option>
+                </select>
+            </div>
+            <div class="filter-group"><span class="filter-label">Month:</span>
+                <select id="monthFilter">
+                    <option value="">All Months</option>
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+            </div>
+            <div class="filter-group"><span class="filter-label">Year:</span>
+                <select id="yearFilter">
+                    <option value="">All Years</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                </select>
+            </div>
+        </div>
+        <div class="main-table-wrap" id="mainTableWrap" style="position:relative;">
+            <div class="card" id="mainCard">
+                <div class="card-header" style="padding: 3px 0 7px 0;">
+                    <h2 class="card-title" style="font-size:13px; margin:0; color:#4361ee; font-weight:500">
+                        <i class="fas fa-tasks"></i> All Tasks
+                    </h2>
+                </div>
+                <div class="table-responsive">
+                    <table class="task-table" id="taskTable">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>TASK ID</th>
+                                <th>TASK LINE</th>
+                                <th>DESCRIPTION</th>
+                                <th>ASSIGNED</th>
+                                <th class="editable">STATUS</th>
+                                <th class="editable">START DATE</th>
+                                <th class="editable">END DATE</th>
+                                <th class="duration">DURATION (Hrs)</th>
+                                <th>MATERIAL COST</th>
+                                <th>MAN COST</th>
+                                <th>TOTAL COST</th>
+                                <th>LOCATION</th>
+                                <th>ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="taskList">
+                            <!-- Example row for main task -->
+                            <tr class="main-task-row">
+                                <td>
+                                    <span class="main-task-expand" data-id="mainTaskId1" style="font-size:17px">
+                                        <i class="fas fa-caret-right"></i>
+                                    </span>
+                                </td>
+                                <td>PRJ-1</td>
+                                <td>1</td>
+                                <td>Main Task Description</td>
+                                <td>John Doe</td>
+                                <td class="editable">
+                                    <span class="status-badge status-ongoing">ONGOING</span>
+                                </td>
+                                <td class="editable">2025-07-01</td>
+                                <td class="editable">2025-07-10</td>
+                                <td>24</td>
+                                <td>-</td>
+                                <td><span class="cost-badge">ZMW 480.00</span></td>
+                                <td><span class="cost-badge">ZMW 480.00</span></td>
+                                <td>Site A</td>
+                                <td>
+                                    <button class="add-subtask-btn action-btn" data-mainid="mainTaskId1">
+                                        <i class="fas fa-plus"></i> Subtask
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Example row for subtask (shown when expanded) -->
+                            <tr class="subtask-row">
+                                <td class="subtask-arrow">↪</td>
+                                <td>PRJ-1-1</td>
+                                <td></td>
+                                <td class="subtask-desc">Sub Task Description</td>
+                                <td>Jane Smith</td>
+                                <td class="editable">
+                                    <span class="status-badge status-pending">PENDING</span>
+                                </td>
+                                <td class="editable">2025-07-02</td>
+                                <td class="editable">2025-07-05</td>
+                                <td>8</td>
+                                <td>-</td>
+                                <td><span class="cost-badge">ZMW 160.00</span></td>
+                                <td><span class="cost-badge">ZMW 160.00</span></td>
+                                <td>Site B</td>
+                                <td>
+                                    <button class="add-subsubtask-btn action-btn" data-mainid="mainTaskId1" data-subid="subTaskId1">
+                                        <i class="fas fa-plus"></i> Sub-Subtask
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Example row for sub-subtask (shown when expanded) -->
+                            <tr class="subsubtask-row">
+                                <td class="subtask-arrow"></td>
+                                <td>PRJ-1-1-1</td>
+                                <td></td>
+                                <td class="subtask-desc" style="padding-left:40px">Sub-Subtask Description</td>
+                                <td>Alex Brown</td>
+                                <td class="editable">
+                                    <span class="status-badge status-completed">COMPLETED</span>
+                                </td>
+                                <td class="editable">2025-07-03</td>
+                                <td class="editable">2025-07-04</td>
+                                <td>2</td>
+                                <td>-</td>
+                                <td><span class="cost-badge">ZMW 40.00</span></td>
+                                <td><span class="cost-badge">ZMW 40.00</span></td>
+                                <td>Site C</td>
+                                <td>
+                                    <!-- No add button for sub-subtask -->
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="empty-state" id="emptyState" style="display:none;">
+                    <i class="fas fa-tasks"></i>
+                    <p>No tasks found.</p>
+                </div>
+            </div>
+            <!-- Table Gantt (side) -->
+            <div class="gantt-table-card" id="ganttTableCard">
+                <div class="gantt-table-header">
+                    <span><i class="fas fa-calendar-alt"></i> Gantt Calendar</span>
+                    <button class="gantt-table-toggle action-btn" id="toggleGanttBtn" title="Show/hide calendar"><i class="fas fa-eye-slash"></i></button>
+                </div>
+                <div class="gantt-table-scroll" id="ganttTableScroll" style="height:100%">
+                    <table class="gantt-table" style="height:100%">
+                        <thead id="ganttCalendarHead"></thead>
+                        <tbody id="ganttCalendarBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <button id="showGanttBtn" class="toggle-bar action-btn hide" title="Show Gantt Calendar"><i class="fas fa-calendar-alt"></i></button>
+        </div>
+    </div>
+<script type="module">
+
+</script>
+</body>
+</html>
