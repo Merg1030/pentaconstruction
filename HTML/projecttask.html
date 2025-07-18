@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Tasks | Task Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="CSS/Projecttask.css">
+</head>
+<body class="dark-mode">
+    <div class="container">
+        <div class="header">
+            <a href="projectdetail.html" class="btn btn-outline" id="backBtn"><i class="fas fa-arrow-left"></i> Back to Project</a>
+            <div class="actions">
+                <button class="btn btn-primary action-btn" id="addTaskBtn">
+                    <i class="fas fa-plus"></i> Add Task
+                </button>
+                <button class="btn btn-outline" id="toggleModeBtn">
+                    <i class="fas fa-moon"></i> Light Mode
+                </button>
+            </div>
+        </div>
+        <div class="project-header" id="projectHeaderSticky">
+            <div class="project-title-sticky" id="projectNameHeader">Project Tasks</div>
+        </div>
+        <div class="filters-bar">
+            <div class="filter-group"><span class="filter-label">Status:</span>
+                <select id="statusFilter">
+                    <option value="">All</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="ONGOING">Ongoing</option>
+                    <option value="PENDING">Pending</option>
+                </select>
+            </div>
+            <div class="filter-group"><span class="filter-label">Month:</span>
+                <select id="monthFilter">
+                    <option value="">All Months</option>
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+            </div>
+            <div class="filter-group"><span class="filter-label">Year:</span>
+                <select id="yearFilter">
+                    <option value="">All Years</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                </select>
+            </div>
+        </div>
+        <div class="main-table-wrap" id="mainTableWrap" style="position:relative;">
+            <div class="card" id="mainCard">
+                <div class="card-header" style="padding: 3px 0 7px 0;">
+                    <h2 class="card-title" style="font-size:13px; margin:0; color:#4361ee; font-weight:500">
+                        <i class="fas fa-tasks"></i> All Tasks
+                    </h2>
+                </div>
+                <div class="table-responsive">
+                    <table class="task-table" id="taskTable">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>TASK ID</th>
+                                <th>TASK LINE</th>
+                                <th>DESCRIPTION</th>
+                                <th>ASSIGNED</th>
+                                <th class="editable">STATUS</th>
+                                <th class="editable">START DATE</th>
+                                <th class="editable">END DATE</th>
+                                <th class="duration">DURATION (Hrs)</th>
+                                <th>MATERIAL COST</th>
+                                <th>MAN COST</th>
+                                <th>TOTAL COST</th>
+                                <th>LOCATION</th>
+                                <th>ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="taskList">
+                            <!-- Example row for main task -->
+                            <tr class="main-task-row">
+                                <td>
+                                    <span class="main-task-expand" data-id="mainTaskId1" style="font-size:17px">
+                                        <i class="fas fa-caret-right"></i>
+                                    </span>
+                                </td>
+                                <td>PRJ-1</td>
+                                <td>1</td>
+                                <td>Main Task Description</td>
+                                <td>John Doe</td>
+                                <td class="editable">
+                                    <span class="status-badge status-ongoing">ONGOING</span>
+                                </td>
+                                <td class="editable">2025-07-01</td>
+                                <td class="editable">2025-07-10</td>
+                                <td>24</td>
+                                <td>-</td>
+                                <td><span class="cost-badge">ZMW 480.00</span></td>
+                                <td><span class="cost-badge">ZMW 480.00</span></td>
+                                <td>Site A</td>
+                                <td>
+                                    <button class="add-subtask-btn action-btn" data-mainid="mainTaskId1">
+                                        <i class="fas fa-plus"></i> Subtask
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Example row for subtask (shown when expanded) -->
+                            <tr class="subtask-row">
+                                <td class="subtask-arrow">↪</td>
+                                <td>PRJ-1-1</td>
+                                <td></td>
+                                <td class="subtask-desc">Sub Task Description</td>
+                                <td>Jane Smith</td>
+                                <td class="editable">
+                                    <span class="status-badge status-pending">PENDING</span>
+                                </td>
+                                <td class="editable">2025-07-02</td>
+                                <td class="editable">2025-07-05</td>
+                                <td>8</td>
+                                <td>-</td>
+                                <td><span class="cost-badge">ZMW 160.00</span></td>
+                                <td><span class="cost-badge">ZMW 160.00</span></td>
+                                <td>Site B</td>
+                                <td>
+                                    <button class="add-subsubtask-btn action-btn" data-mainid="mainTaskId1" data-subid="subTaskId1">
+                                        <i class="fas fa-plus"></i> Sub-Subtask
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Example row for sub-subtask (shown when expanded) -->
+                            <tr class="subsubtask-row">
+                                <td class="subtask-arrow"></td>
+                                <td>PRJ-1-1-1</td>
+                                <td></td>
+                                <td class="subtask-desc" style="padding-left:40px">Sub-Subtask Description</td>
+                                <td>Alex Brown</td>
+                                <td class="editable">
+                                    <span class="status-badge status-completed">COMPLETED</span>
+                                </td>
+                                <td class="editable">2025-07-03</td>
+                                <td class="editable">2025-07-04</td>
+                                <td>2</td>
+                                <td>-</td>
+                                <td><span class="cost-badge">ZMW 40.00</span></td>
+                                <td><span class="cost-badge">ZMW 40.00</span></td>
+                                <td>Site C</td>
+                                <td>
+                                    <!-- No add button for sub-subtask -->
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="empty-state" id="emptyState" style="display:none;">
+                    <i class="fas fa-tasks"></i>
+                    <p>No tasks found.</p>
+                </div>
+            </div>
+            <!-- Table Gantt (side) -->
+            <div class="gantt-table-card" id="ganttTableCard">
+                <div class="gantt-table-header">
+                    <span><i class="fas fa-calendar-alt"></i> Gantt Calendar</span>
+                    <button class="gantt-table-toggle action-btn" id="toggleGanttBtn" title="Show/hide calendar"><i class="fas fa-eye-slash"></i></button>
+                </div>
+                <div class="gantt-table-scroll" id="ganttTableScroll" style="height:100%">
+                    <table class="gantt-table" style="height:100%">
+                        <thead id="ganttCalendarHead"></thead>
+                        <tbody id="ganttCalendarBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <button id="showGanttBtn" class="toggle-bar action-btn hide" title="Show Gantt Calendar"><i class="fas fa-calendar-alt"></i></button>
+        </div>
+    </div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+import { getFirestore, doc, collection, query, where, onSnapshot, addDoc, updateDoc, getDocs, getDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+const firebaseConfig = {
+    apiKey: "AIzaSyDXhhy94Aqmaav6X0UsfMcmsBT539-aheU",
+    authDomain: "project-task-588c4.firebaseapp.com",
+    projectId: "project-task-588c4",
+    storageBucket: "project-task-588c4.appspot.com",
+    messagingSenderId: "411882772509",
+    appId: "1:411882772509:web:08d613186c101a99f38ef4",
+    measurementId: "G-JMFLFYEM0F"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Project ID from URL
+const urlParams = new URLSearchParams(window.location.search);
+const projectId = urlParams.get('id');
+if (!projectId) window.location.href = 'dashboard.html';
+
+// Get project initials for task IDs
+async function getProjectName(projectId) {
+  const docRef = doc(db, "projectDashboard", projectId);
+  const snap = await getDoc(docRef);
+  return snap.exists() ? snap.data().name : "";
+}
+function getInitials(name) {
+  return (name.match(/\b\w/g) || []).join('').toUpperCase();
+}
+async function getNextMainTaskNumber(projectId) {
+  const snap = await getDocs(query(collection(db, "projectTasks"), where("projectId", "==", projectId)));
+  let max = 0;
+  snap.forEach(doc => {
+    const task = doc.data();
+    if (task.taskId) {
+      const m = task.taskId.match(/-(\d+)$/);
+      if (m) max = Math.max(max, parseInt(m[1], 10));
+    }
+  });
+  return max + 1;
+}
+async function getNextSubtaskNumber(mainTaskId, mainDocId) {
+  const snap = await getDocs(collection(db, "projectTasks", mainDocId, "subtasks"));
+  let max = 0;
+  snap.forEach(doc => {
+    const task = doc.data();
+    if (task.taskId && task.taskId.startsWith(mainTaskId + "-")) {
+      const m = task.taskId.match(/-(\d+)$/);
+      if (m) max = Math.max(max, parseInt(m[1], 10));
+    }
+  });
+  return max + 1;
+}
+async function getNextSubSubtaskNumber(subTaskId, mainDocId, subDocId) {
+  const snap = await getDocs(collection(db, "projectTasks", mainDocId, "subtasks", subDocId, "subsubtasks"));
+  let max = 0;
+  snap.forEach(doc => {
+    const task = doc.data();
+    if (task.taskId && task.taskId.startsWith(subTaskId + "-")) {
+      const m = task.taskId.match(/-(\d+)$/);
+      if (m) max = Math.max(max, parseInt(m[1], 10));
+    }
+  });
+  return max + 1;
+}
+
+// Get worked hours for any task from locationHistory
+async function getWorkedHoursForTaskId(taskId) {
+  if (!taskId) return 0;
+  const q = query(collection(db, "locationHistory"), where("taskId", "==", taskId));
+  let sum = 0;
+  const snap = await getDocs(q);
+  snap.forEach(doc => {
+    const d = doc.data();
+    if (d.mh && !isNaN(d.mh)) sum += Number(d.mh);
+  });
+  return sum;
+}
+
+// Get material costs for a task
+async function getMaterialCostForTaskId(taskId) {
+  if (!taskId) return 0;
+  const q = query(collection(db, "materialsUsage"), where("taskId", "==", taskId));
+  let sum = 0;
+  const snap = await getDocs(q);
+  
+  // Get all material prices in a single query
+  const materialIds = new Set();
+  snap.forEach(doc => {
+    const d = doc.data();
+    if (d.materialId) materialIds.add(d.materialId);
+  });
+  
+  // Create a map of material prices
+  const materialPriceMap = {};
+  await Promise.all([...materialIds].map(async materialId => {
+    const matSnap = await getDoc(doc(db, "materials", materialId));
+    if (matSnap.exists()) {
+      materialPriceMap[materialId] = matSnap.data().unitPrice || 0;
+    }
+  }));
+  
+  // Calculate total cost
+  snap.forEach(doc => {
+    const d = doc.data();
+    if (!d.reversed && d.quantity && d.materialId) {
+      const price = materialPriceMap[d.materialId] || 0;
+      sum += Number(d.quantity) * Number(price);
+    }
+  });
+  
+  return sum;
+}
+
+// Gantt toggle logic
+const ganttTableCard = document.getElementById('ganttTableCard');
+const ganttTableScroll = document.getElementById('ganttTableScroll');
+const toggleGanttBtn = document.getElementById('toggleGanttBtn');
+const showGanttBtn = document.getElementById('showGanttBtn');
+const mainCard = document.getElementById('mainCard');
+let ganttVisible = true;
+toggleGanttBtn.onclick = () => {
+  ganttVisible = !ganttVisible;
+  ganttTableCard.classList.toggle('hide', !ganttVisible);
+  mainCard.classList.toggle('full-width', !ganttVisible);
+  showGanttBtn.classList.toggle('hide', ganttVisible);
+  toggleGanttBtn.innerHTML =
+    ganttVisible
+    ? `<i class="fas fa-eye-slash"></i>`
+    : `<i class="fas fa-eye"></i>`;
+};
+showGanttBtn.onclick = () => {
+  ganttVisible = true;
+  ganttTableCard.classList.remove('hide');
+  mainCard.classList.remove('full-width');
+  showGanttBtn.classList.add('hide');
+  toggleGanttBtn.innerHTML = `<i class="fas fa-eye-slash"></i>`;
+};
+
+// Theme toggle
+const toggleModeBtn = document.getElementById('toggleModeBtn');
+const body = document.body;
+toggleModeBtn.addEventListener('click', function() {
+    body.classList.toggle('light-mode');
+    if (body.classList.contains('light-mode')) {
+        this.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+        localStorage.setItem('theme', 'light');
+    } else {
+        this.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+        localStorage.setItem('theme', 'dark');
+    }
+});
+if (localStorage.getItem('theme') === 'light') {
+    body.classList.add('light-mode');
+    toggleModeBtn.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+} else {
+    toggleModeBtn.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+}
+
+// Filters
+const statusFilter = document.getElementById('statusFilter');
+const monthFilter = document.getElementById('monthFilter');
+const yearFilter = document.getElementById('yearFilter');
+const taskList = document.getElementById('taskList');
+const emptyState = document.getElementById('emptyState');
+const ganttCalendarBody = document.getElementById('ganttCalendarBody');
+const ganttCalendarHead = document.getElementById('ganttCalendarHead');
+const addTaskBtn = document.getElementById('addTaskBtn');
+
+// Expand/collapse persistence
+let expandedTasks = {};
+function loadExpandedTasks() {
+  try {
+    expandedTasks = JSON.parse(localStorage.getItem("expanded_tasks") || "{}");
+  } catch (e) { expandedTasks = {}; }
+}
+function saveExpandedTasks() {
+  localStorage.setItem("expanded_tasks", JSON.stringify(expandedTasks));
+}
+
+function formatDate(dateString) {
+    if (!dateString) return '';
+    const date = dateString.toDate ? dateString.toDate() : new Date(dateString);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+function formatDateForInput(dateString) {
+    if (!dateString) return '';
+    const date = dateString.toDate ? dateString.toDate() : new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+function formatCurrency(amount, curr='ZMW') {
+    if (!amount && amount !== 0) return '';
+    const formatter = new Intl.NumberFormat(undefined, {
+        style: 'currency',
+        currency: curr || 'ZMW',
+        minimumFractionDigits: 2
+    });
+    return formatter.format(amount);
+}
+function getStatusBadge(status) {
+    if (!status) return '';
+    status = status.toUpperCase();
+    if (status === 'COMPLETED') return 'status-badge status-completed';
+    if (status === 'ONGOING') return 'status-badge status-ongoing';
+    return 'status-badge status-pending';
+}
+
+// Main/subtask logic
+let allTasks = [];
+let unsubMain = null;
+let subUnsubs = {};
+
+// SUB-SUBTASK LOGIC
+async function getSubSubtasks(mainId, subId) {
+  const snap = await getDocs(collection(db, "projectTasks", mainId, "subtasks", subId, "subsubtasks"));
+  let subsubtasks = [];
+  snap.forEach(subSubDoc => {
+    subsubtasks.push({ id: subSubDoc.id, ...subSubDoc.data() });
+  });
+  return subsubtasks;
+}
+
+// --- MODIFIED loadAllTasks() ---
+async function loadAllTasks() {
+  if (unsubMain) unsubMain();
+  Object.values(subUnsubs).forEach(fn => fn && fn());
+  subUnsubs = {};
+  allTasks = [];
+  
+  unsubMain = onSnapshot(query(collection(db, "projectTasks"), where("projectId", "==", projectId)), async (snapshot) => {
+    allTasks = [];
+    let promises = [];
+    
+    snapshot.forEach(docSnap => {
+      const docData = { id: docSnap.id, ...docSnap.data(), subTasks: [] };
+      docData.expanded = expandedTasks[docSnap.id] || false;
+      allTasks.push(docData);
+
+      promises.push(new Promise((resolve) => {
+        const unsub = onSnapshot(collection(db, "projectTasks", docSnap.id, "subtasks"), async (subSnap) => {
+          docData.subTasks = [];
+          let subPromises = [];
+          
+          subSnap.forEach(subDoc => {
+            let subData = { id: subDoc.id, ...subDoc.data(), subSubtasks: [] };
+            docData.subTasks.push(subData);
+            
+            // Get hours and material costs for this subtask
+            subPromises.push(Promise.all([
+              getWorkedHoursForTaskId(subData.taskId),
+              getMaterialCostForTaskId(subData.taskId)
+            ]).then(([hours, materialCost]) => {
+              subData._durationHours = hours;
+              subData._materialCost = materialCost;
+            }));
+            
+            // Get sub-subtasks for this subtask
+            subPromises.push(getSubSubtasks(docData.id, subDoc.id).then(subsubtasks => {
+              subData.subSubtasks = subsubtasks;
+              
+              // Get hours and material costs for each sub-subtask
+              let subSubPromises = subsubtasks.map(subsub => {
+                return Promise.all([
+                  getWorkedHoursForTaskId(subsub.taskId),
+                  getMaterialCostForTaskId(subsub.taskId)
+                ]).then(([hours, materialCost]) => {
+                  subsub._durationHours = hours;
+                  subsub._materialCost = materialCost;
+                });
+              });
+              return Promise.all(subSubPromises);
+            }));
+          });
+          
+          await Promise.all(subPromises);
+          resolve();
+        });
+        subUnsubs[docSnap.id] = unsub;
+      }));
+    });
+
+    await Promise.all(promises);
+
+    // Get hours and material costs for all main tasks
+    await Promise.all(allTasks.map(async (task) => {
+      const [hours, materialCost] = await Promise.all([
+        getWorkedHoursForTaskId(task.taskId),
+        getMaterialCostForTaskId(task.taskId)
+      ]);
+      task._durationHours = hours;
+      task._materialCost = materialCost;
+    }));
+
+    renderTasks(filterTasks(allTasks));
+    renderGanttCalendar(filterTasks(allTasks));
+  });
+}
+
+function filterTasks(tasks) {
+  const statusVal = statusFilter.value;
+  const monthVal = monthFilter.value;
+  const yearVal = yearFilter.value;
+  return tasks.filter(task => {
+    const matchesStatus = !statusVal || (task.status && task.status.toUpperCase() === statusVal.toUpperCase());
+    let matchesMonth = true;
+    if (monthVal) {
+      const monthNum = parseInt(monthVal);
+      if (task.startDate) {
+        const date = task.startDate.toDate ? task.startDate.toDate() : new Date(task.startDate);
+        matchesMonth = date.getMonth() + 1 === monthNum;
+      } else {
+        matchesMonth = false;
+      }
+    }
+    let matchesYear = true;
+    if (yearVal) {
+      const yearNum = parseInt(yearVal);
+      if (task.startDate) {
+        const date = task.startDate.toDate ? task.startDate.toDate() : new Date(task.startDate);
+        matchesYear = date.getFullYear() === yearNum;
+      } else {
+        matchesYear = false;
+      }
+    }
+    return matchesStatus && matchesMonth && matchesYear;
+  });
+}
+
+function makeEditableInput(cell, type, field, inputType='text') {
+  if (cell.querySelector('input')) return;
+  const val = cell.textContent.trim();
+  const input = document.createElement('input');
+  input.type = inputType;
+  if (inputType === 'date') {
+    input.value = val ? formatDateForInput(val) : '';
+  } else {
+    input.value = val;
+  }
+  input.className = 'editable-input';
+  // Set data-field attribute to allow CSS left/center
+  input.setAttribute('data-field', field);
+
+  // Center all input except description and taskId
+  if (field === 'taskDescription' || field === 'taskId') {
+    input.style.textAlign = 'left';
+  } else {
+    input.style.textAlign = 'center';
+  }
+
+  cell.innerHTML = '';
+  cell.appendChild(input);
+  input.focus();
+  input.onblur = async () => {
+    let newValue = input.value;
+    if (inputType === 'date' && newValue) newValue = new Date(newValue);
+    await saveEditable(cell, type, field, newValue);
+  };
+  input.onkeypress = async (e) => {
+    if (e.key === 'Enter') {
+      input.blur();
+    }
+  };
+}
+function makeEditableSelect(cell, type, field) {
+  if (cell.querySelector('select')) return;
+  const val = cell.textContent.trim();
+  const select = document.createElement('select');
+  select.className = 'editable-select';
+  select.setAttribute('data-field', field);
+  // Center all select except description and taskId
+  if (field === 'taskDescription' || field === 'taskId') {
+    select.style.textAlign = 'left';
+  } else {
+    select.style.textAlign = 'center';
+  }
+  ['COMPLETED', 'ONGOING', 'PENDING'].forEach(opt => {
+    const o = document.createElement('option');
+    o.value = opt;
+    o.textContent = opt;
+    if (val.toUpperCase() === opt) o.selected = true;
+    select.appendChild(o);
+  });
+  cell.innerHTML = '';
+  cell.appendChild(select);
+  select.focus();
+  select.onblur = async () => {
+    await saveEditable(cell, type, field, select.value);
+  };
+  select.onchange = () => select.blur();
+}
+async function saveEditable(cell, type, field, newVal) {
+  const mainId = cell.dataset.mainid || cell.dataset.id;
+  if (type === 'main') {
+    await updateDoc(doc(db, "projectTasks", mainId), { [field]: newVal, updatedAt: new Date() });
+  } else if (type === 'sub') {
+    await updateDoc(doc(db, "projectTasks", mainId, "subtasks", cell.dataset.id), { [field]: newVal, updatedAt: new Date() });
+  } else if (type === 'subsub') {
+    await updateDoc(doc(db, "projectTasks", cell.dataset.mainid, "subtasks", cell.dataset.subid, "subsubtasks", cell.dataset.id), { [field]: newVal, updatedAt: new Date() });
+  }
+}
+
+// --- MODIFIED renderTasks ---
+function renderTasks(tasks) {
+  taskList.innerHTML = '';
+  let visibleCount = 0;
+  tasks.sort((a, b) => (a.taskLine || 0) - (b.taskLine || 0));
+  
+  tasks.forEach(task => {
+    visibleCount++;
+    const hours = task._durationHours || 0;
+    const materialCost = task._materialCost || 0;
+    const manCost = hours * 20;
+    const totalCost = manCost + materialCost;
+    
+    const tr = document.createElement('tr');
+    tr.classList.add('main-task-row');
+    tr.innerHTML = `
+      <td>
+        <span class="main-task-expand" data-id="${task.id}" style="font-size:17px">
+          <i class="fas fa-${task.expanded ? "caret-down" : "caret-right"}"></i>
+        </span>
+      </td>
+      <td>${task.taskId || ''}</td>
+      <td>${task.taskLine || ''}</td>
+      <td>${task.taskDescription || ''}</td>
+      <td>${task.assignedTo || ''}</td>
+      <td class="editable" data-type="main" data-field="status" data-id="${task.id}">
+        <span class="${getStatusBadge(task.status)}">${task.status || ''}</span>
+      </td>
+      <td class="editable" data-type="main" data-field="startDate" data-id="${task.id}">${formatDate(task.startDate) || ''}</td>
+      <td class="editable" data-type="main" data-field="endDate" data-id="${task.id}">${formatDate(task.endDate) || ''}</td>
+      <td>${hours}</td>
+      <td><span class="cost-badge">${formatCurrency(materialCost)}</span></td>
+      <td><span class="cost-badge">${formatCurrency(manCost)}</span></td>
+      <td><span class="cost-badge">${formatCurrency(totalCost)}</span></td>
+      <td>${task.location || ''}</td>
+      <td>
+        <button class="add-subtask-btn action-btn" data-mainid="${task.id}">
+          <i class="fas fa-plus"></i> Subtask
+        </button>
+      </td>
+    `;
+    taskList.appendChild(tr);
+
+    if (task.expanded) {
+      if (!task.subTasks || !task.subTasks.length) {
+        const trSub = document.createElement('tr');
+        trSub.classList.add('subtask-row');
+        trSub.innerHTML = `<td></td><td colspan="13">No sub tasks yet.</td>`;
+        taskList.appendChild(trSub);
+      } else {
+        task.subTasks.forEach(sub => {
+          const subHours = sub._durationHours || 0;
+          const subMaterialCost = sub._materialCost || 0;
+          const subManCost = subHours * 20;
+          const subTotalCost = subManCost + subMaterialCost;
+          
+          const trSub = document.createElement('tr');
+          trSub.classList.add('subtask-row');
+          trSub.innerHTML = `
+            <td class="subtask-arrow">↪</td>
+            <td>${sub.taskId || ''}</td>
+            <td></td>
+            <td class="subtask-desc">${sub.taskDescription || ''}</td>
+            <td>${sub.assignedTo || ''}</td>
+            <td class="editable" data-type="sub" data-mainid="${task.id}" data-field="status" data-id="${sub.id}">
+              <span class="${getStatusBadge(sub.status)}">${sub.status || ''}</span>
+            </td>
+            <td class="editable" data-type="sub" data-mainid="${task.id}" data-field="startDate" data-id="${sub.id}">${formatDate(sub.startDate) || ''}</td>
+            <td class="editable" data-type="sub" data-mainid="${task.id}" data-field="endDate" data-id="${sub.id}">${formatDate(sub.endDate) || ''}</td>
+            <td>${subHours}</td>
+            <td><span class="cost-badge">${formatCurrency(subMaterialCost)}</span></td>
+            <td><span class="cost-badge">${formatCurrency(subManCost)}</span></td>
+            <td><span class="cost-badge">${formatCurrency(subTotalCost)}</span></td>
+            <td>${sub.location || ''}</td>
+            <td>
+              <button class="add-subsubtask-btn action-btn" data-mainid="${task.id}" data-subid="${sub.id}">
+                <i class="fas fa-plus"></i> Sub-Subtask
+              </button>
+            </td>
+          `;
+          taskList.appendChild(trSub);
+
+          if (sub.subSubtasks && sub.subSubtasks.length) {
+            sub.subSubtasks.forEach(subsub => {
+              const subsubHours = subsub._durationHours || 0;
+              const subsubMaterialCost = subsub._materialCost || 0;
+              const subsubManCost = subsubHours * 20;
+              const subsubTotalCost = subsubManCost + subsubMaterialCost;
+              
+              const trSubSub = document.createElement('tr');
+              trSubSub.classList.add('subsubtask-row');
+              trSubSub.innerHTML = `
+                <td class="subtask-arrow"></td>
+                <td>${subsub.taskId || ''}</td>
+                <td></td>
+                <td class="subtask-desc" style="padding-left:40px">${subsub.taskDescription || ''}</td>
+                <td>${subsub.assignedTo || ''}</td>
+                <td class="editable" data-type="subsub" data-mainid="${task.id}" data-subid="${sub.id}" data-field="status" data-id="${subsub.id}">
+                  <span class="${getStatusBadge(subsub.status)}">${subsub.status || ''}</span>
+                </td>
+                <td class="editable" data-type="subsub" data-mainid="${task.id}" data-subid="${sub.id}" data-field="startDate" data-id="${subsub.id}">${formatDate(subsub.startDate) || ''}</td>
+                <td class="editable" data-type="subsub" data-mainid="${task.id}" data-subid="${sub.id}" data-field="endDate" data-id="${subsub.id}">${formatDate(subsub.endDate) || ''}</td>
+                <td>${subsubHours}</td>
+                <td><span class="cost-badge">${formatCurrency(subsubMaterialCost)}</span></td>
+                <td><span class="cost-badge">${formatCurrency(subsubManCost)}</span></td>
+                <td><span class="cost-badge">${formatCurrency(subsubTotalCost)}</span></td>
+                <td>${subsub.location || ''}</td>
+                <td></td>
+              `;
+              taskList.appendChild(trSubSub);
+            });
+          }
+        });
+      }
+    }
+  });
+
+  emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+
+  document.querySelectorAll('.main-task-expand').forEach(btn => {
+    btn.onclick = () => {
+      const mainId = btn.dataset.id;
+      expandedTasks[mainId] = !expandedTasks[mainId];
+      saveExpandedTasks();
+      allTasks.find(t => t.id === mainId).expanded = expandedTasks[mainId];
+      renderTasks(filterTasks(allTasks));
+      renderGanttCalendar(filterTasks(allTasks));
+    };
+  });
+
+  document.querySelectorAll('.add-subtask-btn').forEach(btn => {
+    btn.classList.add("action-btn"); // Ensure all action column buttons have correct class
+    btn.onclick = () => {
+      const mainId = btn.dataset.mainid;
+      addSubtask(mainId);
+    };
+  });
+  document.querySelectorAll('.add-subsubtask-btn').forEach(btn => {
+    btn.classList.add("action-btn"); // Ensure all action column buttons have correct class
+    btn.onclick = () => {
+      const mainId = btn.dataset.mainid;
+      const subId = btn.dataset.subid;
+      addSubSubtask(mainId, subId);
+    };
+  });
+  document.querySelectorAll('.editable').forEach(cell => {
+    cell.onclick = function() {
+      const type = this.dataset.type;
+      const field = this.dataset.field;
+      if (field === 'status') {
+        makeEditableSelect(this, type, field);
+      } else if (field === 'startDate' || field === 'endDate') {
+        makeEditableInput(this, type, field, 'date');
+      }
+    };
+  });
+}
+
+// Main Task
+addTaskBtn.onclick = async () => {
+  const projectName = await getProjectName(projectId);
+  const initials = getInitials(projectName);
+  const nextNum = await getNextMainTaskNumber(projectId);
+  const taskId = `${initials}-${nextNum}`;
+  const taskDesc = prompt("Main Task Description:");
+  if (!taskDesc) return;
+  const assignedTo = prompt("Assigned To:");
+  const location = prompt("Location:");
+  const taskLine = parseInt(prompt("Task Line (number, optional):") || 0);
+  try {
+    await addDoc(collection(db, "projectTasks"), {
+      projectId,
+      taskId,
+      taskLine,
+      taskDescription: taskDesc,
+      assignedTo,
+      location,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+    alert('Main task added!');
+  } catch (e) {
+    alert("Error adding main task: " + e.message);
+  }
+};
+
+// Subtask
+async function addSubtask(mainId) {
+  const mainDoc = await getDoc(doc(db, "projectTasks", mainId));
+  if (!mainDoc.exists()) return alert("Main task not found!");
+  const mainTaskId = mainDoc.data().taskId;
+  const nextNum = await getNextSubtaskNumber(mainTaskId, mainId);
+  const subTaskId = `${mainTaskId}-${nextNum}`;
+  const taskDesc = prompt("Sub Task Description:");
+  if (!taskDesc) return;
+  const assignedTo = prompt("Assigned To:");
+  const location = prompt("Location:");
+  const status = prompt("Status (COMPLETED, ONGOING, PENDING):", "PENDING") || "PENDING";
+  const startDate = prompt("Start Date (YYYY-MM-DD):");
+  const endDate = prompt("End Date (YYYY-MM-DD):");
+  const duration = parseFloat(prompt("Duration (number, hour, optional):") || 0);
+  try {
+    await addDoc(collection(db, "projectTasks", mainId, "subtasks"), {
+      taskId: subTaskId,
+      taskDescription: taskDesc,
+      assignedTo,
+      location,
+      status: status.toUpperCase(),
+      startDate: startDate ? new Date(startDate) : null,
+      endDate: endDate ? new Date(endDate) : null,
+      duration,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+  } catch (e) {
+    alert("Error adding sub task: " + e.message);
+  }
+}
+
+// Sub-subtask
+async function addSubSubtask(mainId, subtaskId) {
+  const subDoc = await getDoc(doc(db, "projectTasks", mainId, "subtasks", subtaskId));
+  if (!subDoc.exists()) return alert("Subtask not found!");
+  const subTaskId = subDoc.data().taskId;
+  const nextNum = await getNextSubSubtaskNumber(subTaskId, mainId, subtaskId);
+  const subSubTaskId = `${subTaskId}-${nextNum}`;
+  const taskDesc = prompt("Sub-Subtask Description:");
+  if (!taskDesc) return;
+  const assignedTo = prompt("Assigned To:");
+  const location = prompt("Location:");
+  const status = prompt("Status (COMPLETED, ONGOING, PENDING):", "PENDING") || "PENDING";
+  const startDate = prompt("Start Date (YYYY-MM-DD):");
+  const endDate = prompt("End Date (YYYY-MM-DD):");
+  const duration = parseFloat(prompt("Duration (number, hour, optional):") || 0);
+  try {
+    await addDoc(collection(db, "projectTasks", mainId, "subtasks", subtaskId, "subsubtasks"), {
+      taskId: subSubTaskId,
+      taskDescription: taskDesc,
+      assignedTo,
+      location,
+      status: status.toUpperCase(),
+      startDate: startDate ? new Date(startDate) : null,
+      endDate: endDate ? new Date(endDate) : null,
+      duration,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+    alert('Sub-subtask added!');
+  } catch (e) {
+    alert("Error adding sub-subtask: " + e.message);
+  }
+}
+
+function buildGanttCalendarHeaders(baseYear) {
+  const months = [
+    {name: "Jan", days: 31},{name:"Feb",days:28},{name:"Mar",days:31},{name:"Apr",days:30},
+    {name:"May",days:31},{name:"Jun",days:30},{name:"Jul",days:31},{name:"Aug",days:31},
+    {name:"Sep",days:30},{name:"Oct",days:31},{name:"Nov",days:30},{name:"Dec",days:31}
+  ];
+  if ((baseYear % 4 === 0 && baseYear % 100 !== 0) || baseYear % 400 === 0) {
+    months[1].days = 29;
+  }
+  let row1 = `<tr><th rowspan="3" style="min-width:160px;text-align:left;">TASK</th>`;
+  months.forEach(m => row1 += `<th colspan="${m.days}">${m.name}</th>`);
+  row1 += "</tr>";
+  let row2 = "<tr>";
+  months.forEach(m => {
+    for(let d=1;d<=m.days;d++) row2 += `<th>${d}</th>`;
+  });
+  row2 += "</tr>";
+  let row3 = "<tr>";
+  months.forEach(m => {
+    for(let d=1;d<=m.days;d++) {
+      const dt = new Date(baseYear, months.indexOf(m), d);
+      const wd = ["S","M","T","W","R","F","S"][dt.getDay()];
+      row3 += `<th>${wd}</th>`;
+    }
+  });
+  row3 += "</tr>";
+  ganttCalendarHead.innerHTML = row1 + row2 + row3;
+  return {months};
+}
+
+function renderGanttCalendar(tasks) {
+  let allRows = [];
+  let minYear = new Date().getFullYear();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  tasks.forEach(main => {
+    allRows.push({
+      isSub: false,
+      description: main.taskDescription || '',
+      status: main.status,
+      startDate: main.startDate,
+      endDate: main.endDate
+    });
+    if (main.startDate) {
+      const y = (main.startDate?.toDate ? main.startDate.toDate() : new Date(main.startDate)).getFullYear();
+      if (y < minYear) minYear = y;
+    }
+    (main.subTasks || []).forEach(sub => {
+      allRows.push({
+        isSub: true,
+        description: sub.taskDescription || '',
+        status: sub.status,
+        startDate: sub.startDate,
+        endDate: sub.endDate
+      });
+      if (sub.startDate) {
+        const y = (sub.startDate?.toDate ? sub.startDate.toDate() : new Date(sub.startDate)).getFullYear();
+        if (y < minYear) minYear = y;
+      }
+      (sub.subSubtasks || []).forEach(subsub => {
+        allRows.push({
+          isSubSub: true,
+          description: subsub.taskDescription || '',
+          status: subsub.status,
+          startDate: subsub.startDate,
+          endDate: subsub.endDate
+        });
+        if (subsub.startDate) {
+          const y = (subsub.startDate?.toDate ? subsub.startDate.toDate() : new Date(subsub.startDate)).getFullYear();
+          if (y < minYear) minYear = y;
+        }
+      });
+    });
+  });
+  const { months } = buildGanttCalendarHeaders(minYear);
+  ganttCalendarBody.innerHTML = "";
+  allRows.forEach(rowTask => {
+    let pct = "";
+    if (rowTask.status && rowTask.status.toUpperCase() === "COMPLETED") pct = "100%";
+    else if (rowTask.status && rowTask.status.toUpperCase() === "ONGOING") pct = "60%";
+    else if (rowTask.status && rowTask.status.toUpperCase() === "PENDING") pct = "0%";
+    else pct = "";
+    let desc = rowTask.isSubSub
+      ? '<span style="margin-left:32px;color:#b0e0ff;font-size:12px;vertical-align:middle;">↪↪</span> <span style="opacity:.8;">' + rowTask.description + '</span>'
+      : rowTask.isSub
+      ? '<span style="margin-left:12px;color:#4cc9f0;font-size:13px;vertical-align:middle;">↪</span> <span style="opacity:.8;">' + rowTask.description + '</span>'
+      : '<span style="font-weight:bold;color:#4361ee;">' + rowTask.description + '</span>';
+    let row = `<tr><td style="text-align:left">${desc}</td>`;
+    let start = null, end = null;
+    if (rowTask.startDate) {
+      start = rowTask.startDate.toDate ? rowTask.startDate.toDate() : new Date(rowTask.startDate);
+      start = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+      
+      // If task is ongoing and has no end date, use today as end date
+      if ((rowTask.status === 'ONGOING' || rowTask.status === 'PENDING') && !rowTask.endDate) {
+        end = today;
+      } else if (rowTask.endDate) {
+        end = rowTask.endDate.toDate ? rowTask.endDate.toDate() : new Date(rowTask.endDate);
+        end = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+      }
+    }
+    
+    let colDate = new Date(minYear, 0, 1);
+    for (let m = 0; m < months.length; m++) {
+      for (let d = 1; d <= months[m].days; d++) {
+        let bar = '';
+        if (start) {
+          let testDate = new Date(colDate.getFullYear(), colDate.getMonth(), colDate.getDate());
+          
+          // Check if we should show the bar for this day
+          if (testDate >= start && (!end || testDate <= end)) {
+            // For ongoing tasks, highlight today in a different color
+            const isToday = testDate.getTime() === today.getTime();
+            const isPast = testDate < today;
+            
+            if (!rowTask.isSub && !rowTask.isSubSub) {
+              if (pct === "100%") {
+                bar = '<div class="gantt-bar"></div>';
+              } else if (pct === "60%") {
+                if (isToday) {
+                  bar = '<div class="gantt-bar" style="background:#ff9800"></div>'; // Orange for today
+                } else if (isPast) {
+                  bar = '<div class="gantt-bar" style="background:#ffe066"></div>'; // Yellow for past days
+                } else {
+                  bar = '<div class="gantt-bar" style="background:#ffe066;opacity:0.6"></div>'; // Lighter yellow for future
+                }
+              } else {
+                if (isToday) {
+                  bar = '<div class="gantt-bar" style="background:#ff9800"></div>'; // Orange for today
+                } else if (isPast) {
+                  bar = '<div class="gantt-bar gantt-bar-empty"></div>'; // Empty for past days
+                } else {
+                  bar = '<div class="gantt-bar gantt-bar-empty" style="opacity:0.6"></div>'; // Lighter empty for future
+                }
+              }
+            } else if (rowTask.isSub) {
+              if (pct === "100%") {
+                bar = '<div class="gantt-bar" style="background:#4cc9f0;opacity:.6"></div>';
+              } else if (pct === "60%") {
+                if (isToday) {
+                  bar = '<div class="gantt-bar" style="background:#2196f3"></div>'; // Blue for today
+                } else if (isPast) {
+                  bar = '<div class="gantt-bar" style="background:#90e0ef"></div>'; // Light blue for past
+                } else {
+                  bar = '<div class="gantt-bar" style="background:#90e0ef;opacity:0.6"></div>'; // Lighter blue for future
+                }
+              } else {
+                if (isToday) {
+                  bar = '<div class="gantt-bar" style="background:#2196f3"></div>'; // Blue for today
+                } else if (isPast) {
+                  bar = '<div class="gantt-bar gantt-bar-empty"></div>'; // Empty for past
+                } else {
+                  bar = '<div class="gantt-bar gantt-bar-empty" style="opacity:0.6"></div>'; // Lighter empty for future
+                }
+              }
+            } else if (rowTask.isSubSub) {
+              if (pct === "100%") {
+                bar = '<div class="gantt-bar" style="background:#b0e0ff;opacity:.6"></div>';
+              } else if (pct === "60%") {
+                if (isToday) {
+                  bar = '<div class="gantt-bar" style="background:#64b5f6"></div>'; // Bright blue for today
+                } else if (isPast) {
+                  bar = '<div class="gantt-bar" style="background:#caf0f8"></div>'; // Lightest blue for past
+                } else {
+                  bar = '<div class="gantt-bar" style="background:#caf0f8;opacity:0.6"></div>'; // Lighter for future
+                }
+              } else {
+                if (isToday) {
+                  bar = '<div class="gantt-bar" style="background:#64b5f6"></div>'; // Bright blue for today
+                } else if (isPast) {
+                  bar = '<div class="gantt-bar gantt-bar-empty"></div>'; // Empty for past
+                } else {
+                  bar = '<div class="gantt-bar gantt-bar-empty" style="opacity:0.6"></div>'; // Lighter empty for future
+                }
+              }
+            }
+          }
+        }
+        row += `<td>${bar}</td>`;
+        colDate.setDate(colDate.getDate() + 1);
+      }
+    }
+    row += `</tr>`;
+    ganttCalendarBody.innerHTML += row;
+  });
+}
+
+statusFilter.addEventListener('change', () => {
+  loadAllTasks(); // To re-calc durations if filters change
+});
+monthFilter.addEventListener('change', () => {
+  loadAllTasks();
+});
+yearFilter.addEventListener('change', () => {
+  loadAllTasks();
+});
+
+loadExpandedTasks();
+loadAllTasks();
+
+// Refresh the calendar every minute to update the live ticking
+setInterval(() => {
+  renderGanttCalendar(filterTasks(allTasks));
+}, 60000);
+
+</script>
+</body>
+</html>

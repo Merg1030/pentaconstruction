@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <!-- Font Awesome 6.x for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Bootstrap 5 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #23272b;
+            color: #fff;
+            position: fixed;
+            height: 100%;
+            padding-top: 24px;
+            z-index: 1000;
+            box-shadow: 2px 0 15px rgba(0,0,0,0.08);
+        }
+
+        .sidebar img {
+            max-width: 110px;
+            margin: 0 auto 10px;
+            display: block;
+            border-radius: 6px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 28px;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 0;
+        }
+
+        .sidebar ul li a {
+            color: #ecf0f1;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 14px 25px;
+            transition: background 0.22s, color 0.22s;
+            font-size: 1.04rem;
+            font-weight: 500;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar ul li a i {
+            margin-right: 15px;
+            font-size: 1.1em;
+            width: 22px;
+            text-align: center;
+        }
+
+        .sidebar ul li:hover a,
+        .sidebar ul li.active a {
+            background-color: #31363b;
+            color: #1abc9c;
+            border-left: 4px solid #1abc9c;
+        }
+        .sidebar ul li a:active,
+        .sidebar ul li a:focus {
+            color: #1abc9c;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 24px;
+            background-color: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #23272b;
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 8px;
+            margin-bottom: 28px;
+            box-shadow: 0 2px 12px rgba(44,62,80,0.05);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.6rem;
+            color: #1abc9c;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .header .notification {
+            position: relative;
+            cursor: pointer;
+            margin-left: 16px;
+        }
+
+        .header .notification i {
+            font-size: 22px;
+            color: #ecf0f1;
+            transition: color 0.3s;
+        }
+
+        .header .notification:hover i {
+            color: #1abc9c;
+        }
+
+        .header .badge {
+            position: absolute;
+            top: -7px;
+            right: -7px;
+            background: #e74c3c;
+            color: white;
+            font-size: 13px;
+            padding: 2px 7px;
+            border-radius: 50%;
+            font-weight: bold;
+            display: none;
+        }
+
+        .header .dropdown-menu {
+            position: absolute;
+            top: 35px;
+            right: 0;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 0;
+            min-width: 280px;
+            max-width: 350px;
+            box-shadow: 0 6px 24px rgba(44,62,80,0.13);
+            z-index: 10;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .header .dropdown-menu.show {
+            display: block;
+        }
+
+        .header .dropdown-menu .notification-item {
+            padding: 13px 18px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.18s;
+            color: #333;
+        }
+        .header .dropdown-menu .notification-item:last-child {
+            border-bottom: none;
+        }
+        .header .dropdown-menu .notification-item:hover {
+            background-color: #f5f7fa;
+            color: #1abc9c;
+        }
+
+        .cards {
+            display: flex;
+            gap: 24px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(44,62,80,0.10);
+            padding: 28px 18px 22px 18px;
+            text-align: center;
+            width: 100%;
+            max-width: 340px;
+            min-width: 220px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: none;
+            flex: 1 1 250px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 10px 22px rgba(44,62,80,0.14);
+        }
+
+        .card i {
+            font-size: 2.8rem;
+            margin-bottom: 11px;
+            color: #1abc9c;
+        }
+
+        .card h3 {
+            margin: 13px 0 14px 0;
+            color: #23272b;
+            font-weight: 600;
+        }
+
+        .card a {
+            text-decoration: none;
+            color: #1abc9c;
+            font-weight: 500;
+            transition: color 0.22s;
+        }
+
+        .card a:hover {
+            color: #14856a;
+        }
+
+        .table-section {
+            margin-top: 45px;
+            background: #fff;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(44,62,80,0.11);
+        }
+
+        .table-section h2 {
+            color: #23272b;
+            margin-bottom: 24px;
+            font-weight: 600;
+            border-bottom: 2px solid #1abc9c;
+            padding-bottom: 10px;
+            display: inline-block;
+            letter-spacing: .5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 18px;
+            background: #fff;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(44,62,80,0.07);
+        }
+
+        th, td {
+            text-align: left;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #1abc9c;
+            color: white;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .add-task-form {
+            margin-bottom: 22px;
+            display: flex;
+            gap: 11px;
+            flex-wrap: wrap;
+        }
+        .add-task-form input {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex: 1;
+            min-width: 140px;
+        }
+        .add-task-form button {
+            padding: 10px 20px;
+            background-color: #1abc9c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .add-task-form button:hover {
+            background-color: #14856a;
+        }
+
+        @media (max-width: 1024px) {
+            .cards {
+                flex-direction: column;
+            }
+            .card {
+                max-width: 100%;
+            }
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            .main-content {
+                margin-left: 200px;
+                padding: 14px;
+            }
+            .header {
+                padding: 10px 16px;
+                font-size: 1rem;
+            }
+            .cards {
+                flex-direction: column;
+                gap: 14px;
+            }
+            .card {
+                width: 100%;
+                min-width: 120px;
+            }
+            .table-section {
+                padding: 13px;
+            }
+            .add-task-form input {
+                min-width: 100px;
+            }
+        }
+        @media (max-width: 576px) {
+            .sidebar {
+                width: 120px;
+                padding-top: 10px;
+            }
+            .main-content {
+                margin-left: 120px;
+                padding: 8px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 7px 8px;
+            }
+            .header h1 {
+                font-size: 1.13rem;
+            }
+            .cards {
+                gap: 7px;
+            }
+            .card {
+                min-width: 80px;
+                padding: 10px 5px;
+            }
+            th, td {
+                padding: 8px;
+                font-size: 0.95rem;
+            }
+            .add-task-form {
+                gap: 6px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar" id="sidebar">
+        <h2><img src="Photos/logo.png" alt="Logo"></h2>
+        <ul>
+            <li><a href="HazidExpense.html"><i class="fa-solid fa-users"></i> Accounts</a></li>
+            <li><a href="Employees.html"><i class="fa-solid fa-user-tie"></i> Employees</a></li>
+            <li><a href="Note.html"><i class="fa-solid fa-clipboard-list"></i> Notes</a></li>
+            <li><a href="projectdashboard.html"><i class="fa-solid fa-diagram-project"></i> Project</a></li>
+             <li><a href="AllTask.html"><i class="fa-solid fa-diagram-project"></i> All Task </a></li>
+            
+          
+            <li><a href="Tool.html"><i class="fa-solid fa-screwdriver-wrench"></i> Tools</a></li>
+            <li><a href="inventory.html"><i class="fa-solid fa-box-open"></i> Fixed Inventory</a></li>
+            <li><a href="material.html"><i class="fa-solid fa-boxes-packing"></i> Construction Material</a></li>
+            <li><a href="Table.html"><i class="fa-solid fa-circle-info"></i> Reports</a></li>
+            <li><a href="index.html"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>PENTA CONSTRUCTION</h1>
+            <div style="display: flex; align-items: center;">
+                <div class="notification">
+                    <i class="fa-solid fa-bell" id="notificationIcon" style="cursor: pointer;"></i>
+                    <span id="notificationBadge" class="badge"></span>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <!-- Notifications will be dynamically added here -->
+                    </div>
+                </div>
+                <span style="margin-left: 20px; color: #ecf0f1;">Welcome, <span id="username" style="font-weight: 500;">User</span>
+                    <button class="btn btn-outline-light btn-sm ms-2" onclick="window.location.href='index.html';">Logout</button>
+                </span>
+            </div>
+        </div>
+
+        <div class="cards">
+            <div class="card">
+                <i class="fa-solid fa-user-plus"></i>
+                <h3>Employees</h3>
+                <a href="Employees.html">Click here to view</a>
+            </div>
+            <div class="card">
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+                <h3>Tools</h3>
+                <a href="Tool.html">Click here to view</a>
+            </div>
+            <div class="card">
+                <i class="fa-solid fa-box-open"></i>
+                <h3>Inventory</h3>
+                <a href="inventory.html">Click here to view</a>
+            </div>
+        </div>
+
+        <div class="table-section">
+            <h2>Active Tasks</h2>
+            <button class="btn btn-primary mb-3" id="toggleTaskFormBtn">
+                <i class="fa-solid fa-plus"></i> Add Task
+            </button>
+            <div id="todayDate" class="mb-3"></div>
+            <div class="add-task-form" id="taskForm" style="display: none;">
+                <input type="text" id="jobNoInput" placeholder="Job No">
+                <input type="text" id="taskDescInput" placeholder="Task Description">
+                <input type="text" id="locationInput" placeholder="Location">
+                <button id="addTaskBtn">Add Task</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Job No</th>
+                        <th>Task Description</th>
+                        <th>Location</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="activeTasksTable">
+                    <!-- Tasks will be added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Firebase (module, loaded in script below) -->
+    <script type="module">
+        // Import Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyClOZGykyDEgqssG423M6CLLKZ8sxrtAFk",
+            authDomain: "shop-a24bc.firebaseapp.com",
+            projectId: "shop-a24bc",
+            storageBucket: "shop-a24bc.firebasestorage.app",
+            messagingSenderId: "405250859058",
+            appId: "1:405250859058:web:01e3c07ad2139c4f5d1c2b",
+            measurementId: "G-NX2KK1ZXG1"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+
+        // DOM elements
+        const activeTasksTable = document.getElementById('activeTasksTable');
+        const jobNoInput = document.getElementById('jobNoInput');
+        const taskDescInput = document.getElementById('taskDescInput');
+        const locationInput = document.getElementById('locationInput');
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const notificationIcon = document.getElementById('notificationIcon');
+        const notificationBadge = document.getElementById('notificationBadge');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const username = document.getElementById('username');
+        const toggleTaskFormBtn = document.getElementById('toggleTaskFormBtn');
+        const taskForm = document.getElementById('taskForm');
+
+        let tasks = [];
+        let editingIndex = null;
+        let taskDocs = []; // to store Firestore doc refs for update/delete
+
+        // Show/hide task form
+        toggleTaskFormBtn.addEventListener('click', function () {
+            if (taskForm.style.display === 'none') {
+                taskForm.style.display = 'flex';
+                toggleTaskFormBtn.innerHTML = '<i class="fa-solid fa-minus"></i> Hide Form';
+            } else {
+                taskForm.style.display = 'none';
+                toggleTaskFormBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Task';
+            }
+        });
+
+        // Render tasks to the table
+        function renderTasks() {
+            activeTasksTable.innerHTML = '';
+            if (tasks.length === 0) {
+                activeTasksTable.innerHTML = '<tr><td colspan="4">No active tasks found</td></tr>';
+                return;
+            }
+            tasks.forEach((task, index) => {
+                const row = document.createElement('tr');
+                const jobNoCell = document.createElement('td');
+                jobNoCell.textContent = task.jobNo;
+
+                const descCell = document.createElement('td');
+                descCell.textContent = task.description;
+
+                const locationCell = document.createElement('td');
+                locationCell.textContent = task.location;
+
+                const actionsCell = document.createElement('td');
+                const editBtn = document.createElement('button');
+                editBtn.innerHTML = '<i class="fa-solid fa-edit"></i>';
+                editBtn.className = 'btn btn-sm btn-outline-primary me-2';
+                editBtn.onclick = () => editTask(index);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+                deleteBtn.className = 'btn btn-sm btn-outline-danger';
+                deleteBtn.onclick = () => deleteTask(index);
+
+                actionsCell.appendChild(editBtn);
+                actionsCell.appendChild(deleteBtn);
+
+                row.appendChild(jobNoCell);
+                row.appendChild(descCell);
+                row.appendChild(locationCell);
+                row.appendChild(actionsCell);
+
+                activeTasksTable.appendChild(row);
+            });
+        }
+
+        // Firebase: Load all tasks from Firestore
+        async function loadTasksFromDB() {
+            tasks = [];
+            taskDocs = [];
+            try {
+                const snapshot = await getDocs(collection(db, "tasks"));
+                snapshot.forEach((docSnap) => {
+                    tasks.push(docSnap.data());
+                    taskDocs.push(docSnap.id);
+                });
+                renderTasks();
+            } catch (error) {
+                alert("Failed to load tasks from server.");
+            }
+        }
+
+        // Firebase: Add a new task
+        async function addTaskToDB(task) {
+            try {
+                await addDoc(collection(db, "tasks"), task);
+                showNotification(`New task added: ${task.description}`);
+                await loadTasksFromDB();
+            } catch (error) {
+                alert("Error saving task to server!");
+            }
+        }
+
+        // Firebase: Update a task
+        async function updateTaskInDB(index, task) {
+            try {
+                const docId = taskDocs[index];
+                if (docId) {
+                    await updateDoc(doc(db, "tasks", docId), task);
+                    showNotification(`Task updated: ${task.description}`);
+                    await loadTasksFromDB();
+                }
+            } catch (error) {
+                alert("Error updating task on server!");
+            }
+        }
+
+        // Firebase: Delete a task
+        async function deleteTaskInDB(index) {
+            try {
+                const docId = taskDocs[index];
+                if (docId) {
+                    await deleteDoc(doc(db, "tasks", docId));
+                    showNotification('Task deleted.');
+                    await loadTasksFromDB();
+                }
+            } catch (error) {
+                alert("Error deleting task from server!");
+            }
+        }
+
+        // Add a new task
+        addTaskBtn.addEventListener('click', function () {
+            const jobNo = jobNoInput.value.trim();
+            const description = taskDescInput.value.trim();
+            const location = locationInput.value.trim();
+            if (jobNo && description && location) {
+                if (editingIndex !== null) {
+                    // Update
+                    updateTaskInDB(editingIndex, { jobNo, description, location });
+                    editingIndex = null;
+                    addTaskBtn.textContent = 'Add Task';
+                } else {
+                    // Add
+                    addTaskToDB({ jobNo, description, location });
+                }
+                jobNoInput.value = '';
+                taskDescInput.value = '';
+                locationInput.value = '';
+            } else {
+                alert('Please fill in all fields');
+            }
+        });
+
+        // Edit a task
+        function editTask(index) {
+            const task = tasks[index];
+            jobNoInput.value = task.jobNo;
+            taskDescInput.value = task.description;
+            locationInput.value = task.location;
+            addTaskBtn.textContent = 'Update Task';
+            editingIndex = index;
+            if (taskForm.style.display === 'none') {
+                taskForm.style.display = 'flex';
+                toggleTaskFormBtn.innerHTML = '<i class="fa-solid fa-minus"></i> Hide Form';
+            }
+        }
+
+        // Delete a task
+        function deleteTask(index) {
+            if (confirm('Are you sure you want to delete this task?')) {
+                deleteTaskInDB(index);
+            }
+        }
+
+        // Notification functions
+        function showNotification(message) {
+            const notificationItem = document.createElement('div');
+            notificationItem.className = 'notification-item';
+            notificationItem.textContent = message;
+            dropdownMenu.appendChild(notificationItem);
+
+            // Update badge
+            const currentCount = parseInt(notificationBadge.textContent) || 0;
+            notificationBadge.textContent = currentCount + 1;
+            notificationBadge.style.display = 'block';
+        }
+
+        // Notifications dropdown toggle
+        notificationIcon.addEventListener('click', function () {
+            dropdownMenu.classList.toggle('show');
+            if (dropdownMenu.classList.contains('show')) {
+                notificationBadge.style.display = 'none';
+                notificationBadge.textContent = '';
+            }
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!notificationIcon.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                dropdownMenu.classList.remove('show');
+            }
+        });
+
+        // Inactivity timeout
+        let inactivityTimeout;
+        function resetInactivityTimeout() {
+            clearTimeout(inactivityTimeout);
+            inactivityTimeout = setTimeout(() => {
+                logout();
+            }, 600000); // 10 minutes
+        }
+        function logout() {
+            window.location.href = 'index.html';
+        }
+        resetInactivityTimeout();
+        document.addEventListener('mousemove', resetInactivityTimeout);
+        document.addEventListener('keypress', resetInactivityTimeout);
+        document.addEventListener('click', resetInactivityTimeout);
+        document.addEventListener('touchstart', resetInactivityTimeout);
+
+        // Security measures
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
+        document.addEventListener('keydown', function (e) {
+            if ((e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'a' || e.key === 'c')) || e.key === 'F12') {
+                e.preventDefault();
+            }
+        });
+
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', async function () {
+            username.textContent = 'chrischishela';
+            await loadTasksFromDB();
+            // Example notifications
+            showNotification('New task assigned: Foundation inspection');
+            showNotification('Inventory low: Cement bags');
+        });
+        
+        function displayTodayDate() {
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const formatted = today.toLocaleDateString(undefined, options);
+            document.getElementById('todayDate').textContent = `Today: ${formatted}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            displayTodayDate();
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
