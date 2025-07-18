@@ -5,29 +5,213 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Tasks | Task Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="CSS/Projecttask.css">
+    <style>
+        body { font-family: 'Segoe UI','Roboto',sans-serif; background: #181a22; color: #e0e0e0; margin: 0; }
+        .container { margin: 0 auto; padding: 8px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; gap: 10px; }
+        .btn { display: inline-flex; align-items: center; gap: 6px; padding: 5px 13px; border-radius: 7px; font-weight: 500; cursor: pointer; text-decoration: none; border: none; font-size: 13px; transition: all 0.2s ease; }
+        .btn-outline { background: none; border: 1.2px solid #33394c; color: #4361ee; }
+        .btn-outline:hover { background: #23263a; }
+        .btn-primary { background: #4361ee; color: #fff; }
+        .btn-primary:hover { background: #3a56d4; }
+        .project-title-sticky { font-size: 19px; font-weight: 700; color: #4cc9f0; margin-bottom: 2px; }
+        .project-title { font-size: 24px; margin-bottom: 15px; color: #4361ee; font-weight: 600; }
+        .filters-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 7px 10px; padding: 5px 5px 5px 8px; background: linear-gradient(90deg, #4361ee 0%, #4cc9f0 100%); border-radius: 7px; box-shadow: 0 1px 8px rgba(67,97,238,0.08); margin-bottom: 9px;}
+        .filter-group { display: flex; align-items: center; gap: 4px; background: #23263a; border-radius: 16px; padding: 3.5px 9px 3.5px 7px; box-shadow: 0 1px 4px rgba(67,97,238,0.04); flex: 1 1 70px; min-width: 70px; max-width: 120px; }
+        .filter-label { font-size: 10px; font-weight: 600; color: #4361ee; }
+        select { border: 1.2px solid #4361ee; border-radius: 10px; padding: 2px 4px; background: #23263a; color: #e0e0e0; font-size: 11px; min-width: 40px; }
+        select:focus { outline: none; border-color: #4cc9f0;}
+        .main-table-wrap { display: flex; flex-direction: row; align-items: stretch; width: 100%; transition: all 0.3s; }
+        .card { background: #23263a; padding: 7px 4px 2px 4px; border-radius: 7px 0 0 7px; border: 1px solid #33394c; box-shadow: 0 2px 10px rgba(67,97,238,0.07); margin-bottom: 0; flex: 1 1 65%; overflow-x: auto; transition: flex-basis 0.3s, width 0.3s; }
+        .card.full-width { border-radius: 7px; flex: 1 1 100% !important; }
+        .table-responsive { width: 100%; overflow-x: auto; }
+        .task-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        .task-table th, .task-table td { padding: 4px 2px; border-bottom: 1px solid #33394c; }
+        .task-table th { background: #24263c; font-weight: 600; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.3px; position: sticky; top: 0; z-index: 1;}
+        .task-table tr:nth-child(even) { background: #1f2233;}
+        .task-table tr:hover { background: #2c314b;}
+        .status-badge { display: inline-block; padding: 1.5px 5px; border-radius: 7px; font-size: 9.5px; font-weight: 600; }
+        .status-completed { background: rgba(76,201,240,0.1); color: #4cc9f0; border: 1px solid #4cc9f0; }
+        .status-ongoing { background: rgba(248,150,30,0.1); color: #f8961e; border: 1px solid #f8961e; }
+        .status-pending { background: rgba(108,117,125,0.13); color: #6c757d; border: 1px solid #6c757d; }
+        .editable { cursor: pointer; border-radius: 5px; }
+        .editable:hover { background: rgba(67,97,238,0.09);}
+        .editable-input, .editable-select { 
+            width: 100%; 
+            padding: 2px 3px !important; 
+            border-radius: 6px; 
+            border: 1.2px solid #4361ee; 
+            background: #23263a; 
+            color: #e0e0e0; 
+            font-size: 11px; 
+            text-align: center; /* Center all input text by default */
+        }
+        /* Left align description and task id inputs */
+        .editable-input[data-field="taskDescription"], 
+        .editable-input[data-field="taskId"], 
+        .editable-select[data-field="taskDescription"], 
+        .editable-select[data-field="taskId"] {
+            text-align: left !important;
+        }
+        .cost-badge { display: inline-block; padding: 1.5px 5px; border-radius: 7px; font-size: 10px; font-weight: 600; background: rgba(67,97,238,0.1); color: #4361ee; border: 1px solid #4361ee; }
+        .empty-state { text-align: center; padding: 12px; color: #e0e0e0; opacity: 0.7; }
+        .empty-state i { font-size: 20px; opacity: 0.5; }
+        .gantt-table-card { background: #23263a; border-radius: 0 7px 7px 0; border-top: 1px solid #33394c; border-right: 1px solid #33394c; border-bottom: 1px solid #33394c; box-shadow: 0 2px 10px rgba(67,97,238,0.07); margin-bottom: 0; min-width: 220px; max-width: 100%; flex: 1 1 35%; display: flex; flex-direction: column; justify-content: stretch; transition: max-width 0.3s, min-width 0.3s;}
+        .gantt-table-card.hide { display: none !important; }
+        .gantt-table-header { padding: 4px 3px 2px 7px; display: flex; align-items: center; font-size: 12px; color: #4cc9f0; font-weight: 600; justify-content: space-between; }
+        .gantt-table-toggle { color: #4361ee; background: none; border: none; font-size: 18px; cursor: pointer; margin-left: 7px;}
+        .toggle-bar { position: absolute; left: 0; top: 100px; z-index: 50; background: #23263a; color: #4361ee; border: 1px solid #4361ee; border-radius: 0 6px 6px 0; padding: 5px 8px; font-size: 15px; cursor: pointer; min-width: 18px; text-align: center; }
+        .toggle-bar:hover { background: #4361ee; color: #fff; }
+        .gantt-table-scroll { overflow-x: auto; height: 100%; }
+        .gantt-table { width: max-content; border-collapse: collapse; font-size: 10px; height: 100%; min-width: 400px;}
+        .gantt-table th, .gantt-table td { border: 1px solid #33394c; padding: 2px 3px; text-align: center; background: #23263a;}
+        .gantt-table th { background: #181a22; color: #e0e0e0; position: sticky; top: 0; z-index: 2; font-size:10px;}
+        .gantt-bar { background: #4cc9f0; border-radius: 4px; height: 7px; width: 90%; margin: 0 auto;}
+        .gantt-bar-empty { background: transparent; }
+        .gantt-pct { font-weight: bold; font-size: 10px;}
+        .gantt-table tr { height: 22px; }
+        .hide { display: none !important; }
+        .subtask-row td { background: #20223a !important; color: #b0e0ff !important; }
+        .subtask-row td.subtask-desc { padding-left: 24px !important; }
+        .subtask-arrow { text-align: left; padding-left: 10px; color: #4cc9f0; font-size: 15px; }
+        .main-task-expand { cursor: pointer; color: #4361ee; margin-right: 6px; }
+        .subsubtask-row td { background: #181a22 !important; color: #a0e0f0 !important; }
+        /* Unified action button for all Add-Task, Add-Subtask, Add-SubSubtask */
+        .action-btn {
+            background: #23263a;
+            color: #4cc9f0;
+            border: 1.5px solid #4cc9f0;
+            border-radius: 7px;
+            padding: 4px 13px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.18s, color 0.18s, border 0.18s;
+            margin: 2px 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 1px 4px rgba(76,201,240,0.06);
+        }
+        .action-btn i {
+            font-size: 13px;
+        }
+        .action-btn:hover,
+        .action-btn:focus {
+            background: #4cc9f0;
+            color: #23263a;
+            border-color: #4361ee;
+        }
+        /* Remove old subtask button style to avoid conflicts */
+        .add-subtask-btn,
+        .add-subsubtask-btn {
+            background: none;
+            color: inherit;
+            border: none;
+            box-shadow: none;
+            padding: 0;
+            margin: 0;
+            font-size: inherit;
+        }
+        @media (max-width: 800px) {
+            .main-table-wrap { flex-direction: column; }
+            .gantt-table-card { max-width: 100%; min-width: 100%; border-radius: 0 0 7px 7px; }
+            .card { border-radius: 7px 7px 0 0;}
+        }
+        .project-info-container {
+            margin: 20px 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .project-header-card {
+            background: #23263a;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .project-title-line {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4361ee;
+        }
+        .project-label {
+            font-weight: bold;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+        .project-value {
+            font-size: 16px;
+            color: #ffffff;
+        }
+        .project-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .detail-item {
+            display: flex;
+            align-items: center;
+        }
+        .detail-value {
+            color: #e0e0e0;
+            margin-left: 5px;
+        }
+        .current-month-btn {
+            background: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 10px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        .current-month-btn:hover {
+            background: #3a56d4;
+        }
+        .fullscreen-btn {
+            background: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 10px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        .fullscreen-btn:hover {
+            background: #3a56d4;
+        }
+        .today-highlight {
+            background-color: #ff9800 !important;
+            color: #000 !important;
+            font-weight: bold;
+        }
+        .current-month {
+            background-color: rgba(67, 97, 238, 0.2) !important;
+        }
+    </style>
 </head>
 <body class="dark-mode">
     <div class="container">
         <div class="project-info-container">
-    <div class="project-header-card">
-       
-        <div class="project-details-grid">
-            <div class="detail-item">
-                <span class="detail-label">PROJECT MANAGER:</span>
-                <span class="detail-value">Christopher chishela</span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">SUPERVISOR:</span>
-                <span class="detail-value">Orscar mushimbi</span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">DEADLINE:</span>
-                <span class="detail-value deadline"></span>30 August 2025
+            <div class="project-header-card">
+                <div class="project-details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">PROJECT MANAGER:</span>
+                        <span class="detail-value">Christopher chishela</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">SUPERVISOR:</span>
+                        <span class="detail-value">Orscar mushimbi</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">DEADLINE:</span>
+                        <span class="detail-value deadline">30 August 2025</span>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    </div>
         <div class="header">
             <div class="actions">
                 <button class="btn btn-primary action-btn" id="addTaskBtn">
@@ -105,77 +289,7 @@
                             </tr>
                         </thead>
                         <tbody id="taskList">
-                            <!-- Example row for main task -->
-                            <tr class="main-task-row">
-                                <td>
-                                    <span class="main-task-expand" data-id="mainTaskId1" style="font-size:17px">
-                                        <i class="fas fa-caret-right"></i>
-                                    </span>
-                                </td>
-                                <td>PRJ-1</td>
-                                <td>1</td>
-                                <td>Main Task Description</td>
-                                <td>John Doe</td>
-                                <td class="editable">
-                                    <span class="status-badge status-ongoing">ONGOING</span>
-                                </td>
-                                <td class="editable">2025-07-01</td>
-                                <td class="editable">2025-07-10</td>
-                                <td>24</td>
-                                <td>-</td>
-                                <td><span class="cost-badge">ZMW 480.00</span></td>
-                                <td><span class="cost-badge">ZMW 480.00</span></td>
-                                <td>Site A</td>
-                                <td>
-                                    <button class="add-subtask-btn action-btn" data-mainid="mainTaskId1">
-                                        <i class="fas fa-plus"></i> Subtask
-                                    </button>
-                                </td>
-                            </tr>
-                            <!-- Example row for subtask (shown when expanded) -->
-                            <tr class="subtask-row">
-                                <td class="subtask-arrow">↪</td>
-                                <td>PRJ-1-1</td>
-                                <td></td>
-                                <td class="subtask-desc">Sub Task Description</td>
-                                <td>Jane Smith</td>
-                                <td class="editable">
-                                    <span class="status-badge status-pending">PENDING</span>
-                                </td>
-                                <td class="editable">2025-07-02</td>
-                                <td class="editable">2025-07-05</td>
-                                <td>8</td>
-                                <td>-</td>
-                                <td><span class="cost-badge">ZMW 160.00</span></td>
-                                <td><span class="cost-badge">ZMW 160.00</span></td>
-                                <td>Site B</td>
-                                <td>
-                                    <button class="add-subsubtask-btn action-btn" data-mainid="mainTaskId1" data-subid="subTaskId1">
-                                        <i class="fas fa-plus"></i> Sub-Subtask
-                                    </button>
-                                </td>
-                            </tr>
-                            <!-- Example row for sub-subtask (shown when expanded) -->
-                            <tr class="subsubtask-row">
-                                <td class="subtask-arrow"></td>
-                                <td>PRJ-1-1-1</td>
-                                <td></td>
-                                <td class="subtask-desc" style="padding-left:40px">Sub-Subtask Description</td>
-                                <td>Alex Brown</td>
-                                <td class="editable">
-                                    <span class="status-badge status-completed">COMPLETED</span>
-                                </td>
-                                <td class="editable">2025-07-03</td>
-                                <td class="editable">2025-07-04</td>
-                                <td>2</td>
-                                <td>-</td>
-                                <td><span class="cost-badge">ZMW 40.00</span></td>
-                                <td><span class="cost-badge">ZMW 40.00</span></td>
-                                <td>Site C</td>
-                                <td>
-                                    <!-- No add button for sub-subtask -->
-                                </td>
-                            </tr>
+                            <!-- Example rows will be populated by JavaScript -->
                         </tbody>
                     </table>
                 </div>
@@ -188,7 +302,11 @@
             <div class="gantt-table-card" id="ganttTableCard">
                 <div class="gantt-table-header">
                     <span><i class="fas fa-calendar-alt"></i> Gantt Calendar</span>
-                    <button class="gantt-table-toggle action-btn" id="toggleGanttBtn" title="Show/hide calendar"><i class="fas fa-eye-slash"></i></button>
+                    <div>
+                        <button class="current-month-btn" id="currentMonthBtn" title="Show current month">Current Month</button>
+                        <button class="fullscreen-btn" id="fullscreenBtn" title="Toggle fullscreen"><i class="fas fa-expand"></i></button>
+                        <button class="gantt-table-toggle action-btn" id="toggleGanttBtn" title="Show/hide calendar"><i class="fas fa-eye-slash"></i></button>
+                    </div>
                 </div>
                 <div class="gantt-table-scroll" id="ganttTableScroll" style="height:100%">
                     <table class="gantt-table" style="height:100%">
@@ -200,8 +318,9 @@
             <button id="showGanttBtn" class="toggle-bar action-btn hide" title="Show Gantt Calendar"><i class="fas fa-calendar-alt"></i></button>
         </div>
     </div>
+
 <script type="module">
- import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
 import { getFirestore, doc, collection, query, where, onSnapshot, addDoc, updateDoc, getDocs, getDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
 // Debugging function
@@ -1367,7 +1486,6 @@ function renderGanttCalendar(tasks) {
     setInterval(() => {
         renderGanttCalendar(filterTasks(allTasks));
     }, 60000);
-
 </script>
 </body>
 </html>
