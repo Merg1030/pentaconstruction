@@ -254,10 +254,23 @@
       .week-filter-select, .month-filter-select { width: 100%; margin-left: 0; }
       .panel-heading, .panel-controls, .sticky-filters { padding-left: 3vw; padding-right: 3vw; }
     }
+     .B{
+      background: #e3e8ef;
+      border: none;
+      color: #1976d2;
+      font-weight: bold;
+      padding: 8px 24px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background 0.18s, color 0.18s;
+      outline: none;
+    }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
+   <button class="B" onclick="window.history.back()">← Back</button>
   <div class="panel">
     <div class="panel-top-sticky">
       <div class="panel-heading">Expenses Tracker</div>
