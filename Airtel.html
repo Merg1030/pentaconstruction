@@ -107,12 +107,15 @@
       .company-summary-card { min-width:unset; max-width:unset; width:100%; }
       .controls-bar { flex-direction: column; gap: 10px;}
     }
+    .btn.btn-outline{color: white; margin-right: 20PX;}
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
   <div class="panel" id="panel-to-export">
-    <div class="panel-heading">Personnel & Daily Expenses Tracker</div>
+    <div class="panel-heading"><a href="dashboard.html" class="btn btn-outline">
+  <i class="fas fa-arrow-left"></i> Back
+</a>Personnel & Daily Expenses Tracker</div>
     <div class="controls-bar">
       <button id="toggle-form-btn" type="button">Add Entry</button>
       <label>
