@@ -190,14 +190,9 @@
         .current-month {
             background-color: rgba(67, 97, 238, 0.2) !important;
         }
-         .clickable {
-      color: blue;
-      text-decoration: underline;
-      cursor: pointer;
     </style>
 </head>
 <body class="dark-mode">
-     <span class="clickable" onclick="goToProjectDetail()">Completed</span>
     <div class="container">
         <div class="project-info-container">
             <div class="project-header-card">
@@ -1491,9 +1486,6 @@ function renderGanttCalendar(tasks) {
     setInterval(() => {
         renderGanttCalendar(filterTasks(allTasks));
     }, 60000);
-     function goToProjectDetail() {
-      window.location.href = 'Projectdetail.html';
-    }
 </script>
 </body>
 </html>
