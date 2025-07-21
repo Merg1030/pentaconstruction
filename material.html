@@ -6,215 +6,147 @@
   <title>IMS | Materials</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <style>
-  /* dark-blue.css */
-
-:root {
-  --bg-main: #181a22;
-  --bg-panel: #1f222c;
-  --bg-light: #2c3e50;
-  --bg-hover: #22252f;
-  --text-light: #e0e0e0;
-  --text-muted: #aaa;
-  --accent-blue: #3498db;
-  --accent-blue-hover: #2980b9;
-  --accent-green: #1abc9c;
-  --accent-green-hover: #16a085;
-  --accent-danger: #c0392b;
-  --sticky-bg: #2a2e3a;
-  --border-color: #444;
-}
-
-body {
-  font-family: 'Open Sans', Arial, sans-serif;
-  background: var(--bg-main);
-  color: var(--text-light);
-  margin: 0;
-}
-
-.panel {
-  background: var(--bg-panel);
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  margin: 40px auto;
-  padding: 30px;
-}
-
-.panel-sticky-top {
-  position: sticky;
-  top: 0;
-  background: var(--sticky-bg);
-  z-index: 40;
-  box-shadow: 0 1px 7px rgba(0, 0, 0, 0.3);
-  border-radius: 8px 8px 0 0;
-  margin-bottom: 0;
-}
-
-.panel-heading {
-  background: var(--bg-light);
-  color: #fff;
-  padding: 18px 24px;
-  font-size: 1.16rem;
-  font-weight: bold;
-  border-radius: 8px 8px 0 0;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-}
-
-.top-actions {
-  margin-bottom: 18px;
-  display: flex;
-  gap: 12px;
-  background: var(--sticky-bg);
-  position: sticky;
-  top: 60px;
-  z-index: 49;
-  padding-top: 6px;
-}
-
-.btn-action {
-  background: var(--accent-green);
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.btn-action:hover {
-  background: var(--accent-green-hover);
-}
-
-.search-bar {
-  margin-bottom: 18px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--sticky-bg);
-  position: sticky;
-  top: 110px;
-  z-index: 48;
-  padding-top: 6px;
-}
-
-.search-input {
-  padding: 9px 12px;
-  font-size: 15px;
-  border-radius: 4px;
-  border: 1px solid var(--border-color);
-  background: #20242f;
-  color: var(--text-light);
-  width: 220px;
-}
-
-.search-btn {
-  padding: 9px 20px;
-  font-size: 15px;
-  border-radius: 4px;
-  border: none;
-  background: var(--accent-blue);
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.search-btn:hover {
-  background: var(--accent-blue-hover);
-}
-
-.table-responsive {
-  overflow-x: auto;
-  max-height: 68vh;
-  position: relative;
-  background: var(--bg-panel);
-  border-radius: 0 0 8px 8px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: var(--bg-panel);
-  min-width: 900px;
-}
-
-th, td {
-  padding: 14px 12px;
-  text-align: left;
-  font-size: 15px;
-  background: inherit;
-  color: var(--text-light);
-}
-
-th {
-  font-weight: 700;
-  background: var(--bg-light);
-  color: #fff;
-  position: sticky;
-  top: 0;
-  z-index: 60;
-}
-
-tr:nth-child(even) {
-  background: #20242f;
-}
-
-tr:hover {
-  background: var(--bg-hover);
-}
-
-td:first-child, th:first-child {
-  position: sticky;
-  left: 0;
-  z-index: 61;
-  background: #2e313d;
-  color: #fff;
-}
-
-th:first-child {
-  z-index: 62;
-}
-
-#table-message {
-  position: relative;
-  z-index: 20;
-}
-
-/* Mobile Responsiveness */
-@media (max-width: 700px) {
-  .panel {
-    padding: 5px;
-  }
-  .panel-heading {
-    padding: 11px 6px;
-    font-size: 1rem;
-  }
-  .top-actions {
-    flex-direction: column;
-    gap: 8px;
-    top: 49px;
-  }
-  .search-bar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 5px;
-    top: 130px;
-  }
-  .search-input {
-    width: 100%;
-  }
-  table {
-    min-width: 500px;
-  }
-}
-
+    body { font-family: 'Open Sans', Arial, sans-serif; background: #f4f7fa; margin: 0; }
+    .panel {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(44,62,80,0.04);
+      margin: 40px auto;
+      padding: 30px;
+      position: relative;
+    }
+    .panel-sticky-top {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 40;
+      box-shadow: 0 1px 7px rgba(44,62,80,0.05);
+      border-radius: 8px 8px 0 0;
+      margin-bottom: 0;
+    }
+    .panel-heading {
+      background: #666363;
+      color: #fff;
+      padding: 18px 24px;
+      font-size: 1.16rem;
+      font-weight: bold;
+      border-radius: 8px 8px 0 0;
+      margin: 0;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .top-actions {
+      margin-bottom: 18px;
+      display: flex;
+      gap: 12px;
+      background: #fff;
+      position: sticky;
+      top: 60px;
+      z-index: 49;
+      padding-top: 6px;
+    }
+    .btn-action {
+      background: #1abc9c;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-action:hover { background: #16a085; }
+    .search-bar {
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      position: sticky;
+      top: 110px;
+      z-index: 48;
+      padding-top: 6px;
+    }
+    .search-input {
+      padding: 9px 12px;
+      font-size: 15px;
+      border-radius: 4px;
+      border: 1px solid #bbb;
+      width: 220px;
+    }
+    .search-btn {
+      padding: 9px 20px;
+      font-size: 15px;
+      border-radius: 4px;
+      border: none;
+      background: #2980b9;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .search-btn:hover { background: #1a5fa0; }
+    .table-responsive {
+      overflow-x: auto;
+      max-height: 68vh;
+      position: relative;
+      background: #fff;
+      border-radius: 0 0 8px 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      min-width: 900px;
+      position: relative;
+    }
+    th, td {
+      padding: 14px 12px;
+      text-align: left;
+      font-size: 15px;
+      background: inherit;
+    }
+    th {
+      font-weight: 700;
+      background: #666363;
+      color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 60;
+    }
+    tr:nth-child(even) { background: #f7fafc; }
+    tr:hover { background: #eafaf1; }
+    td:first-child, th:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 61;
+      background: #e5e7eb;
+      color: #2c3e50;
+    }
+    th:first-child { z-index: 62; }
+    #table-message {
+      position: relative;
+      z-index: 20;
+    }
+    .btn.btn-outline{color: white; margin-right: 20PX;}
+    @media (max-width: 700px) {
+      .panel { padding: 5px; }
+      .panel-heading { padding: 11px 6px; font-size: 1rem; }
+      .top-actions { flex-direction: column; gap: 8px; top: 49px; }
+      .search-bar { flex-direction: column; align-items: stretch; gap: 5px; top: 130px; }
+      .search-input { width: 100%; }
+      table { min-width: 500px; }
+    }
   </style>
 </head>
 <body>
   <div class="panel">
-    <div class="panel-heading panel-sticky-top">Materials Inventory</div>
+    <div class="panel-heading panel-sticky-top">
+      <a href="dashboard.html" class="btn btn-outline">
+  <i class="fas fa-arrow-left"></i> Back
+</a>Materials Inventory</div>
     <div class="top-actions panel-sticky-top">
       <a href="addMaterial.html" class="btn-action"><i class="fa fa-plus"></i> Add Material</a>
       <a href="assignMaterial.html" class="btn-action"><i class="fa fa-tasks"></i> Assign</a>
