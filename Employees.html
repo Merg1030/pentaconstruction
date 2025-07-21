@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -217,13 +218,18 @@ tr:hover {
         gap: 7px;
     }
 }
+.btn.btn-outline{color:white;
+margin-right:20px;}
   </style>
 </head>
 <body>
   <div id="wrapper">
     <nav class="navbar" role="navigation">
       <div class="navbar-header">
-        <a class="navbar-brand" href="#">IMS Portal</a>
+        <a class="navbar-brand" href="#">
+                <a href="dashboard.html" class="btn btn-outline">
+  <i class="fas fa-arrow-left"></i> Back
+</a>IMS Portal</a>
         <span class="user-info" style="margin-left:auto;">
           Welcome Christopher Chishela&nbsp; 
         </span>
@@ -231,7 +237,8 @@ tr:hover {
     </nav>
     <div id="page-wrapper">
       <div id="page-inner">
-        <h2 style="margin-top:0;">Employees</h2>
+        <h2 style="margin-top:0;">
+          Employees</h2>
         <hr />
         <div class="top-actions">
           <a href="addEmployee.html.html" class="btn-action"><i class="fa fa-plus"></i> Add Employee</a>
